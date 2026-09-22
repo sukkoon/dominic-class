@@ -38,9 +38,13 @@ create table public.dc_languages (
   pattern_key     text not null,
   font_key        text not null,
   tagline_ko      text not null default '',
+  hero_image_url  text not null default '',
+  hero_image_alt  text not null default '',
   sort_order      smallint not null default 0
 );
 comment on table public.dc_languages is 'Dominic Class 언어 마스터';
+comment on column public.dc_languages.hero_image_url is '언어 히어로 배경에 쓰는 랜드마크 실사 사진 (Unsplash)';
+comment on column public.dc_languages.hero_image_alt is '사진 대체 텍스트';
 
 -- 레벨 (가격의 단일 진실 원천)
 create table public.dc_levels (

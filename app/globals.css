@@ -3,12 +3,13 @@
 /* ============================================================
    Dominic Class — 전역 디자인 토큰
 
-   두 축으로 구분한다.
-   ① 언어 : 컬러 계열 + 디스플레이 서체 + 히어로 모티프 1개  ([data-lang])
+   세 축으로 구분한다.
+   ① 언어 : 컬러 계열 + 현지어 서체 + 랜드마크 실사 사진      ([data-lang])
    ② 레벨 : 같은 계열 안에서 옅음 → 중간 → 짙음 명도 계단     ([data-level])
+   ③ 유형 : 문법 청록 · 회화 바이올렛 · 시험 슬레이트          ([data-type])
 
-   배경은 단색 기반. 반복 패턴은 쓰지 않고, 히어로에만 큰 모티프
-   도형 하나를 아주 낮은 농도로 얹어 국가 느낌을 낸다.
+   배경은 단색 기반. 반복 패턴 대신 언어 히어로와 홈 언어 카드에만
+   해당 국가 랜드마크 사진을 깔고, 계열색 스크림으로 가독성을 지킨다.
    ============================================================ */
 
 :root {
@@ -25,7 +26,6 @@
   --ink: #faf9f7;
   --ink-light: #ffffff;
   --display: "Oswald", "Pretendard Variable", sans-serif;
-  --motif: none;
 
   /* 레벨 미지정 시 기준색 그대로 */
   --brand: var(--brand-base);
@@ -39,7 +39,7 @@
 
 /* ─────────── 언어별 계열 ─────────── */
 
-/* 🇺🇸 영어 — 뉴욕 네이비. 모티프: 별 하나 */
+/* 🇺🇸 영어 — 뉴욕 코발트 블루 (히어로 사진: 자유의 여신상) */
 [data-lang="en"] {
   /* :root 에서 치환이 끝나지 않도록 계열 블록에서 다시 선언한다 */
   --brand: var(--brand-base);
@@ -49,10 +49,9 @@
   --ink: #f3f7ff;
   --ink-light: #ffffff;
   --display: "Oswald", "Pretendard Variable", sans-serif;
-  --motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 5 61 39 97 39 68 61 79 95 50 74 21 95 32 61 3 39 39 39Z' fill='none' stroke='%23000' stroke-width='2.4'/%3E%3Cpath d='M50 24 55 39 71 39 58 49 63 64 50 55 37 64 42 49 29 39 45 39Z' fill='none' stroke='%23000' stroke-width='1.4'/%3E%3C/svg%3E");
 }
 
-/* 🇯🇵 일본어 — 교토 남색(藍). 모티프: 해 원 하나 + 세이가이하 한 겹 */
+/* 🇯🇵 일본어 — 사쿠라 로즈 (히어로 사진: 도쿄타워) */
 [data-lang="ja"] {
   /* :root 에서 치환이 끝나지 않도록 계열 블록에서 다시 선언한다 */
   --brand: var(--brand-base);
@@ -62,10 +61,9 @@
   --ink: #fff5f7;
   --ink-light: #fff5f7;
   --display: "Noto Serif JP", "Pretendard Variable", serif;
-  --motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='40' r='29' fill='none' stroke='%23000' stroke-width='2.4'/%3E%3Cg fill='none' stroke='%23000' stroke-width='1.8'%3E%3Cpath d='M12 94a38 38 0 0 1 76 0'/%3E%3Cpath d='M25 94a25 25 0 0 1 50 0'/%3E%3Cpath d='M38 94a12 12 0 0 1 24 0'/%3E%3C/g%3E%3C/svg%3E");
 }
 
-/* 🇪🇸 스페인어 — 안달루시아 테라코타. 모티프: 무데하르 말굽 아치 */
+/* 🇪🇸 스페인어 — 사프란 앰버 (히어로 사진: 사그라다 파밀리아) */
 [data-lang="es"] {
   /* :root 에서 치환이 끝나지 않도록 계열 블록에서 다시 선언한다 */
   --brand: var(--brand-base);
@@ -75,10 +73,9 @@
   --ink: #fff8ee;
   --ink-light: #fff8ee;
   --display: "Playfair Display", "Pretendard Variable", serif;
-  --motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%23000' stroke-width='2.4'%3E%3Cpath d='M20 96V50a30 30 0 0 1 60 0v46'/%3E%3C/g%3E%3Cg fill='none' stroke='%23000' stroke-width='1.5'%3E%3Cpath d='M29 96V50a21 21 0 0 1 42 0v46'/%3E%3Cpath d='M50 20v-8M50 28a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z'/%3E%3C/g%3E%3C/svg%3E");
 }
 
-/* 🇨🇳 중국어 — 상하이 홍(紅). 모티프: 원형 월동문 + 격자 */
+/* 🇨🇳 중국어 — 중국 홍(紅) (히어로 사진: 만리장성) */
 [data-lang="zh"] {
   /* :root 에서 치환이 끝나지 않도록 계열 블록에서 다시 선언한다 */
   --brand: var(--brand-base);
@@ -88,7 +85,6 @@
   --ink: #fff5f2;
   --ink-light: #fff5f2;
   --display: "Noto Serif SC", "Pretendard Variable", serif;
-  --motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='34' fill='none' stroke='%23000' stroke-width='2.4'/%3E%3Ccircle cx='50' cy='50' r='25' fill='none' stroke='%23000' stroke-width='1.4'/%3E%3Cg fill='none' stroke='%23000' stroke-width='1.4'%3E%3Cpath d='M50 16v68M16 50h68'/%3E%3Cpath d='M34 34h32v32H34z'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 /* ─────────── 레벨별 명도 계단 ───────────
@@ -196,37 +192,6 @@ a { color: inherit; text-decoration: none; }
 }
 .themed > * { position: relative; z-index: 1; }
 
-/* 히어로에만 큰 모티프 도형 하나. mask로 칠해 옅은 배경에서도 보인다. */
-[data-lang] .themed-hero::after {
-  content: "";
-  position: absolute;
-  right: -3%;
-  top: 50%;
-  translate: 0 -50%;
-  width: min(400px, 46%);
-  aspect-ratio: 1;
-  background: var(--on-brand);
-  -webkit-mask: var(--motif) center / contain no-repeat;
-  mask: var(--motif) center / contain no-repeat;
-  opacity: 0.14;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* 히어로 좌하단 현지어 워터마크 */
-.hero-watermark {
-  position: absolute;
-  left: 0;
-  bottom: -0.22em;
-  font-size: clamp(4.5rem, 14vw, 11rem);
-  font-weight: 700;
-  line-height: 1;
-  opacity: 0.08;
-  white-space: nowrap;
-  pointer-events: none;
-  user-select: none;
-  z-index: 0;
-}
 
 /* 제목도 본문과 같은 나눔고딕. 굵게 + 자간을 좁혀 대비를 만든다. */
 .display {
@@ -346,34 +311,6 @@ input:focus, select:focus, textarea:focus {
   background: var(--on-brand);
 }
 
-/*
- * 국기 두 색을 함께 쓰는 2톤 표면 — 언어 카드용.
- * 미국 네이비→레드, 일본 남색→주홍, 스페인 테라코타→사프란, 중국 홍→금.
- */
-.themed-duo {
-  background: linear-gradient(
-    150deg,
-    var(--brand) 0%,
-    var(--brand) 56%,
-    color-mix(in srgb, var(--accent) 72%, #000) 100%
-  );
-}
-
-/* 카드 모서리에 작은 국가 모티프 하나 */
-[data-lang] .themed-motif::after {
-  content: "";
-  position: absolute;
-  right: -14px;
-  bottom: -22px;
-  width: 136px;
-  height: 136px;
-  background: var(--on-brand);
-  -webkit-mask: var(--motif) center / contain no-repeat;
-  mask: var(--motif) center / contain no-repeat;
-  opacity: 0.16;
-  pointer-events: none;
-  z-index: 0;
-}
 
 /* ============================================================
    홈 히어로 — 밝고 화사한 톤
@@ -599,4 +536,64 @@ input:focus, select:focus, textarea:focus {
   font-size: 1.15rem;
   font-weight: 800;
   letter-spacing: -0.02em;
+}
+
+/* ============================================================
+   랜드마크 실사 사진 표면
+   언어 히어로와 홈 언어 카드 배경에 각 나라 랜드마크 사진을 깔고,
+   글자가 있는 쪽(좌측)에 계열색 스크림을 짙게 얹어 가독성을 지킨다.
+   출처: Unsplash (상업적 사용 무료)
+   ============================================================ */
+.themed-photo {
+  background: var(--brand-base);
+}
+
+/* .themed > * 의 z-index 1 보다 구체적이어야 하므로 클래스 두 개로 선택 */
+.themed-photo > .themed-photo__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.themed-photo > .themed-photo__media img {
+  object-fit: cover;
+}
+
+/* 좌 → 우로 옅어지는 스크림. 좌측 글자 영역은 거의 불투명하다. */
+.themed-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--brand-base) 93%, transparent) 0%,
+      color-mix(in srgb, var(--brand-base) 72%, transparent) 40%,
+      color-mix(in srgb, var(--brand-base) 14%, transparent) 100%
+    ),
+    /* 계열색과 사진 색이 겹쳐 뭉개지는 것을 막는 명암 레이어 */
+      linear-gradient(
+        105deg,
+        transparent 45%,
+        color-mix(in srgb, #000 30%, transparent) 100%
+      );
+}
+
+/*
+ * 카드는 글자가 사진 위에 바로 얹히므로 위쪽만 짙게 덮고 아래쪽은 사진을 드러낸다.
+ * 랜드마크가 카드 하단에서 보이고, 제목과 설명은 상단에서 읽힌다.
+ */
+.themed-photo--card::after {
+  background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--brand-base) 94%, transparent) 0%,
+      color-mix(in srgb, var(--brand-base) 86%, transparent) 46%,
+      color-mix(in srgb, var(--brand-base) 30%, transparent) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      transparent 40%,
+      color-mix(in srgb, #000 28%, transparent) 100%
+    );
 }

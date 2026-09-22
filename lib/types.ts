@@ -24,6 +24,9 @@ export type Language = {
   pattern_key: string;
   font_key: string;
   tagline_ko: string;
+  /** 언어 히어로 배경에 쓰는 랜드마크 실사 사진 (Unsplash) */
+  hero_image_url: string;
+  hero_image_alt: string;
   sort_order: number;
 };
 

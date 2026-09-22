@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getCatalog } from "@/lib/queries";
 import { formatKrw } from "@/lib/format";
 import InstructorAvatar from "@/components/instructor-avatar";
+import LandmarkPhoto from "@/components/landmark-photo";
 import WeekSchedule from "@/components/week-schedule";
 
 const TRACKS = [
@@ -108,13 +109,18 @@ export default async function HomePage() {
               href={"/languages/" + l.code}
               data-lang={l.code}
               data-level="advanced"
-              className="themed themed-duo themed-motif group flex flex-col rounded-[var(--radius)] p-6 transition hover:-translate-y-1 hover:shadow-[var(--shadow-lg)]"
+              className="themed themed-photo themed-photo--card group flex min-h-[17.5rem] flex-col overflow-hidden rounded-[var(--radius)] p-6 transition hover:-translate-y-1 hover:shadow-[var(--shadow-lg)]"
             >
+              <LandmarkPhoto
+                src={l.hero_image_url}
+                alt={l.hero_image_alt}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              />
               <div className="text-4xl">{l.flag_emoji}</div>
               <h3 className="display mt-4 text-2xl">{l.name_ko}</h3>
-              <p className="display-native text-sm opacity-75">{l.name_native}</p>
-              <p className="mt-3 text-sm leading-relaxed opacity-90">{l.tagline_ko}</p>
-              <span className="mt-6 text-sm font-bold opacity-90 group-hover:opacity-100">
+              <p className="display-native text-sm opacity-80">{l.name_native}</p>
+              <p className="mt-3 text-sm leading-relaxed opacity-95">{l.tagline_ko}</p>
+              <span className="mt-5 text-sm font-bold opacity-95 group-hover:opacity-100">
                 9개 클래스 보러가기 →
               </span>
             </Link>

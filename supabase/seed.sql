@@ -381,3 +381,26 @@ update public.dc_instructors i
  where cr.language_code = i.language_code
    and cr.level_code = i.level_code
    and cr.class_type_code = i.class_type_code;
+
+-- ── 언어 히어로 랜드마크 실사 사진 ──
+-- 출처: Unsplash (Unsplash License — 상업적 사용 무료, 출처 표기 불필요)
+-- 스크림을 얹은 상태에서 랜드마크가 확실히 보이는 구도로 골랐다.
+update public.dc_languages set
+  hero_image_url = 'https://images.unsplash.com/photo-1524099163253-32b7f0256868?auto=format&fit=crop&w=1920&q=75',
+  hero_image_alt = '뉴욕 리버티섬의 자유의 여신상'
+ where code = 'en';
+
+update public.dc_languages set
+  hero_image_url = 'https://images.unsplash.com/photo-1606044466411-207a9a49711f?auto=format&fit=crop&w=1920&q=75',
+  hero_image_alt = '해질 무렵 주황빛으로 빛나는 도쿄타워와 도쿄 야경'
+ where code = 'ja';
+
+update public.dc_languages set
+  hero_image_url = 'https://images.unsplash.com/photo-1558560354-c17a5af844d6?auto=format&fit=crop&w=1920&q=75',
+  hero_image_alt = '바르셀로나 가우디의 사그라다 파밀리아 성당 외관'
+ where code = 'es';
+
+update public.dc_languages set
+  hero_image_url = 'https://images.unsplash.com/photo-1608037521277-154cd1b89191?auto=format&fit=crop&w=1920&q=75',
+  hero_image_alt = '산등성이를 따라 이어지는 중국 만리장성'
+ where code = 'zh';

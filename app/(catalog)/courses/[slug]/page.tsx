@@ -56,12 +56,8 @@ export default async function CourseDetailPage({
       data-level={course.level_code}
       data-type={course.class_type_code}
     >
-      {/* 히어로 — 국가 모티프 + 현지어 워터마크 */}
-      <section className="themed themed-hero">
-        <span className="hero-watermark display-native" aria-hidden="true">
-          {course.language.name_native}
-        </span>
-
+      {/* 히어로 — 레벨 명도 계단을 그대로 쓴다 (사진은 언어 페이지에만) */}
+      <section className="themed">
         <div className="mx-auto max-w-6xl px-4 py-14">
           <nav className="mb-5 flex flex-wrap items-center gap-2 text-sm opacity-80">
             <Link href="/courses">전체 강의</Link>

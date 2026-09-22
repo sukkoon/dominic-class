@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { getCatalog } from "@/lib/queries";
 import { formatKrw } from "@/lib/format";
 import CourseCard from "@/components/course-card";
+import LandmarkPhoto from "@/components/landmark-photo";
 import type { LanguageCode } from "@/lib/types";
 
 export async function generateStaticParams() {
@@ -33,13 +34,16 @@ export default async function LanguagePage({ params }: { params: Promise<{ code:
 
   return (
     <div>
-      {/* 언어 테마 히어로 — 현지어 워터마크 + 국가 모티프 */}
-      <section className="themed themed-hero">
-        <span className="hero-watermark display-native" aria-hidden="true">
-          {lang.name_native}
-        </span>
+      {/* 언어 히어로 — 해당 국가 랜드마크 실사 사진 + 계열색 스크림 */}
+      <section className="themed themed-photo">
+        <LandmarkPhoto
+          src={lang.hero_image_url}
+          alt={lang.hero_image_alt}
+          priority
+          sizes="100vw"
+        />
 
-        <div className="mx-auto max-w-6xl px-4 py-20 sm:py-24">
+        <div className="mx-auto max-w-6xl px-4 py-20 sm:py-28">
           <div className="flex items-center gap-3 text-5xl">
             <span>{lang.flag_emoji}</span>
             {lang.flag_emoji_alt ? (
