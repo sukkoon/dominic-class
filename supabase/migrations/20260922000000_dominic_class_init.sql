@@ -65,11 +65,13 @@ create table public.dc_class_types (
 );
 comment on table public.dc_class_types is 'Dominic Class 강의 유형 (시험은 OPIc 기준)';
 
--- 강사 12명 (언어 x 레벨 1명). 배정 규칙을 DB 제약으로 강제
+-- 강사 36명 (언어 x 레벨 x 유형 1명). 한 사람이 문법·회화·시험을 겸하지 않는다.
+-- 배정 규칙을 DB 제약으로 강제한다.
 create table public.dc_instructors (
   id               uuid primary key default gen_random_uuid(),
   language_code    text not null references public.dc_languages(code),
   level_code       text not null references public.dc_levels(code),
+  class_type_code  text not null references public.dc_class_types(code),
   name_ko          text not null,
   name_native      text,
   nationality      text not null check (nationality in ('KR','US','JP','ES','MX','CN')),
@@ -82,8 +84,8 @@ create table public.dc_instructors (
   bio_ko           text not null default '',
   years_experience smallint not null default 3,
   created_at       timestamptz not null default now(),
-  unique (language_code, level_code),
-  unique (id, language_code, level_code),
+  unique (language_code, level_code, class_type_code),
+  unique (id, language_code, level_code, class_type_code),
   -- 초급=한국인 / 중급=한국어·현지어 이중언어 / 고급=현지 원어민(영어 미국, 일본어 일본, 중국어 중국, 스페인어 스페인 또는 멕시코)
   constraint dc_instructors_rule_chk check (
        (level_code = 'beginner'     and nationality = 'KR' and speaks_korean and not is_native)
@@ -117,9 +119,9 @@ create table public.dc_courses (
   created_at      timestamptz not null default now(),
   updated_at      timestamptz not null default now(),
   unique (language_code, level_code, class_type_code),
-  -- 배정된 강사가 반드시 해당 강의의 언어/레벨과 일치하도록 복합 FK로 강제
-  foreign key (instructor_id, language_code, level_code)
-    references public.dc_instructors (id, language_code, level_code)
+  -- 배정된 강사가 반드시 해당 강의의 언어/레벨/유형과 일치하도록 복합 FK로 강제
+  foreign key (instructor_id, language_code, level_code, class_type_code)
+    references public.dc_instructors (id, language_code, level_code, class_type_code)
 );
 
 -- 수업 트랙 2종 (월수금 1시간 x 12일 / 토요일 전일제 3시간 x 4일) = 72행
@@ -173,7 +175,7 @@ create table public.dc_lesson_homework (
   unique (lesson_id, seq)
 );
 
-create index dc_instructors_lang_level_idx on public.dc_instructors (language_code, level_code);
+create index dc_instructors_facet_idx on public.dc_instructors (language_code, level_code, class_type_code);
 create index dc_courses_facet_idx   on public.dc_courses (language_code, level_code, class_type_code);
 create index dc_courses_lang_idx    on public.dc_courses (language_code, sort_order);
 create index dc_tracks_course_idx   on public.dc_schedule_tracks (course_id);

@@ -8,34 +8,52 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* 히어로 */}
-      <section className="themed">
+      {/* 히어로 — 밝은 바탕 + 4개 언어 색 레일 */}
+      <section className="hero-bright">
+        <div className="hero-rail" aria-hidden="true">
+          <span style={{ background: "#d62828" }} />
+          <span style={{ background: "#e03c31" }} />
+          <span style={{ background: "#e08900" }} />
+          <span style={{ background: "#c99700" }} />
+        </div>
+
         <div className="mx-auto max-w-6xl px-4 py-20 sm:py-28">
-          <p className="chip chip-on-brand mb-5">20~40대를 위한 외국어 클래스</p>
+          <p className="chip chip-accent mb-5">20~40대를 위한 외국어 클래스</p>
+
           <h1 className="display max-w-3xl text-4xl font-bold leading-[1.15] sm:text-6xl">
-            퇴근하고 한 시간,
+            퇴근하고 <em className="hero-accent">한 시간</em>,
             <br />
-            주말에 세 시간.
+            주말에 <em className="hero-accent">세 시간</em>.
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed opacity-90">
+
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-[var(--muted)]">
             영어 · 일본어 · 스페인어 · 중국어.
             <br />
             초급은 한국인 선생님이, 중급은 두 언어를 모두 쓰는 선생님이, 고급은 현지 원어민이
             가르칩니다.
           </p>
+
           <div className="mt-9 flex flex-wrap gap-3">
-            <Link
-              href="/courses"
-              className="btn !bg-[var(--on-brand)] !text-[var(--brand-base)] !px-6 !py-3"
-            >
+            <Link href="/courses" className="btn btn-primary !px-6 !py-3">
               전체 {courses.length}개 강의 보기
             </Link>
-            <Link
-              href="/instructors"
-              className="btn !border-white/40 !text-[var(--on-brand)] !px-6 !py-3"
-            >
+            <Link href="/instructors" className="btn btn-ghost !px-6 !py-3 !bg-[var(--surface)]">
               강사진 만나보기
             </Link>
+          </div>
+
+          <div className="mt-10 flex flex-wrap gap-2.5">
+            {languages.map((l) => (
+              <Link
+                key={l.code}
+                href={"/languages/" + l.code}
+                data-lang={l.code}
+                className="hero-lang-chip"
+              >
+                <span className="text-lg">{l.flag_emoji}</span>
+                {l.name_ko}
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -86,7 +104,11 @@ export default async function HomePage() {
 
           <div className="grid gap-5 md:grid-cols-3">
             {levels.map((lv) => (
-              <div key={lv.code} data-level={lv.code} className="card flex flex-col overflow-hidden">
+              <div
+                key={lv.code}
+                data-level={lv.code}
+                className="tone-signature card flex flex-col overflow-hidden"
+              >
                 <div className="themed px-6 py-5">
                   <div className="flex items-center justify-between gap-2">
                     <h3 className="display text-xl font-bold">
@@ -204,8 +226,12 @@ export default async function HomePage() {
       <section className="mx-auto max-w-6xl px-4 py-16">
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
-            <h2 className="display text-2xl font-bold sm:text-3xl">12명의 선생님</h2>
-            <p className="prose-muted mt-2">언어 × 레벨마다 전담 강사가 배정됩니다.</p>
+            <h2 className="display text-2xl font-bold sm:text-3xl">
+              {instructors.length}명의 선생님
+            </h2>
+            <p className="prose-muted mt-2">
+              문법 · 회화 · 시험을 한 사람이 겸하지 않습니다. 클래스마다 전담 강사가 따로 있습니다.
+            </p>
           </div>
           <Link href="/instructors" className="btn btn-ghost shrink-0">
             전체 보기
@@ -214,8 +240,14 @@ export default async function HomePage() {
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
           {instructors
-            .slice()
-            .sort((a, b) => a.language_code.localeCompare(b.language_code))
+            .filter((ins) => ins.class_type_code === "conversation")
+            .sort(
+              (a, b) =>
+                (languages.find((l) => l.code === a.language_code)?.sort_order ?? 0) -
+                  (languages.find((l) => l.code === b.language_code)?.sort_order ?? 0) ||
+                (levels.find((l) => l.code === a.level_code)?.sort_order ?? 0) -
+                  (levels.find((l) => l.code === b.level_code)?.sort_order ?? 0),
+            )
             .map((ins) => (
               <div
                 key={ins.id}

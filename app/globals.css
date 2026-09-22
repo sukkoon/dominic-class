@@ -44,10 +44,10 @@
   /* :root 에서 치환이 끝나지 않도록 계열 블록에서 다시 선언한다 */
   --brand: var(--brand-base);
   --on-brand: var(--ink-light);
-  --brand-base: #0a2342;
-  --accent: #d62828;
-  --ink: #fdf6e3;
-  --ink-light: #f7f3ea;
+  --brand-base: #1d56b8;
+  --accent: #ef3b4e;
+  --ink: #f3f7ff;
+  --ink-light: #ffffff;
   --display: "Oswald", "Pretendard Variable", sans-serif;
   --motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 5 61 39 97 39 68 61 79 95 50 74 21 95 32 61 3 39 39 39Z' fill='none' stroke='%23000' stroke-width='2.4'/%3E%3Cpath d='M50 24 55 39 71 39 58 49 63 64 50 55 37 64 42 49 29 39 45 39Z' fill='none' stroke='%23000' stroke-width='1.4'/%3E%3C/svg%3E");
 }
@@ -57,10 +57,10 @@
   /* :root 에서 치환이 끝나지 않도록 계열 블록에서 다시 선언한다 */
   --brand: var(--brand-base);
   --on-brand: var(--ink-light);
-  --brand-base: #1b3b6f;
-  --accent: #e03c31;
-  --ink: #fbf7f0;
-  --ink-light: #f6f2ea;
+  --brand-base: #c9456c;
+  --accent: #3a5ea8;
+  --ink: #fff5f7;
+  --ink-light: #fff5f7;
   --display: "Noto Serif JP", "Pretendard Variable", serif;
   --motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='40' r='29' fill='none' stroke='%23000' stroke-width='2.4'/%3E%3Cg fill='none' stroke='%23000' stroke-width='1.8'%3E%3Cpath d='M12 94a38 38 0 0 1 76 0'/%3E%3Cpath d='M25 94a25 25 0 0 1 50 0'/%3E%3Cpath d='M38 94a12 12 0 0 1 24 0'/%3E%3C/g%3E%3C/svg%3E");
 }
@@ -70,10 +70,10 @@
   /* :root 에서 치환이 끝나지 않도록 계열 블록에서 다시 선언한다 */
   --brand: var(--brand-base);
   --on-brand: var(--ink-light);
-  --brand-base: #a83a10;
-  --accent: #e08900;
-  --ink: #fff8ec;
-  --ink-light: #fff6e8;
+  --brand-base: #b5620a;
+  --accent: #e03131;
+  --ink: #fff8ee;
+  --ink-light: #fff8ee;
   --display: "Playfair Display", "Pretendard Variable", serif;
   --motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%23000' stroke-width='2.4'%3E%3Cpath d='M20 96V50a30 30 0 0 1 60 0v46'/%3E%3C/g%3E%3Cg fill='none' stroke='%23000' stroke-width='1.5'%3E%3Cpath d='M29 96V50a21 21 0 0 1 42 0v46'/%3E%3Cpath d='M50 20v-8M50 28a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z'/%3E%3C/g%3E%3C/svg%3E");
 }
@@ -83,10 +83,10 @@
   /* :root 에서 치환이 끝나지 않도록 계열 블록에서 다시 선언한다 */
   --brand: var(--brand-base);
   --on-brand: var(--ink-light);
-  --brand-base: #a5122a;
-  --accent: #c99700;
-  --ink: #fff9f0;
-  --ink-light: #fdf3ea;
+  --brand-base: #c81e2b;
+  --accent: #f0b429;
+  --ink: #fff5f2;
+  --ink-light: #fff5f2;
   --display: "Noto Serif SC", "Pretendard Variable", serif;
   --motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='34' fill='none' stroke='%23000' stroke-width='2.4'/%3E%3Ccircle cx='50' cy='50' r='25' fill='none' stroke='%23000' stroke-width='1.4'/%3E%3Cg fill='none' stroke='%23000' stroke-width='1.4'%3E%3Cpath d='M50 16v68M16 50h68'/%3E%3Cpath d='M34 34h32v32H34z'/%3E%3C/g%3E%3C/svg%3E");
 }
@@ -95,13 +95,13 @@
    초급 옅음(짙은 글자) → 중급 중간(짙은 글자) → 고급 짙음(밝은 글자) */
 
 [data-level="beginner"] {
-  --brand: color-mix(in srgb, var(--brand-base) 14%, #ffffff);
-  --on-brand: color-mix(in srgb, var(--brand-base) 88%, #000000);
+  --brand: color-mix(in srgb, var(--brand-base) 22%, #ffffff);
+  --on-brand: color-mix(in srgb, var(--brand-base) 55%, #000000);
   --level-step: 1;
 }
 [data-level="intermediate"] {
-  --brand: color-mix(in srgb, var(--brand-base) 45%, #ffffff);
-  --on-brand: color-mix(in srgb, var(--brand-base) 88%, #000000);
+  --brand: color-mix(in srgb, var(--brand-base) 55%, #ffffff);
+  --on-brand: color-mix(in srgb, var(--brand-base) 55%, #000000);
   --level-step: 2;
 }
 [data-level="advanced"] {
@@ -119,10 +119,10 @@
     --muted: #9a958e;
     --border: #2a2d35;
   }
-  [data-lang="en"] { --brand-base: #123a6b; --ink: #131720; }
-  [data-lang="ja"] { --brand-base: #22508f; --ink: #12161f; }
-  [data-lang="es"] { --brand-base: #b8420f; --ink: #1d160f; }
-  [data-lang="zh"] { --brand-base: #b3162f; --ink: #1c1210; }
+  [data-lang="en"] { --brand-base: #2b63c2; --ink: #131720; }
+  [data-lang="ja"] { --brand-base: #d1547a; --ink: #1d1317; }
+  [data-lang="es"] { --brand-base: #c26c10; --ink: #1d160f; }
+  [data-lang="zh"] { --brand-base: #d22736; --ink: #1c1210; }
 
   /* 다크모드에서는 초급·중급도 너무 밝아지지 않게 폭을 좁힌다 */
   [data-level="beginner"] {
@@ -177,8 +177,9 @@ a { color: inherit; text-decoration: none; }
   position: relative;
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, var(--brand) 93%, var(--accent)),
-    color-mix(in srgb, var(--brand) 86%, #000) 100%
+    color-mix(in srgb, var(--brand) 86%, var(--accent)) 0%,
+    var(--brand) 62%,
+    color-mix(in srgb, var(--brand) 94%, #000) 100%
   );
   color: var(--on-brand);
   overflow: hidden;
@@ -343,8 +344,8 @@ input:focus, select:focus, textarea:focus {
   background: linear-gradient(
     150deg,
     var(--brand) 0%,
-    var(--brand) 50%,
-    color-mix(in srgb, var(--accent) 86%, #000) 100%
+    var(--brand) 56%,
+    color-mix(in srgb, var(--accent) 72%, #000) 100%
   );
 }
 
@@ -362,4 +363,99 @@ input:focus, select:focus, textarea:focus {
   opacity: 0.16;
   pointer-events: none;
   z-index: 0;
+}
+
+/* ============================================================
+   홈 히어로 — 밝고 화사한 톤
+   따뜻한 크림에서 연한 하늘빛으로 가는 밝은 바탕에,
+   4개 언어 색을 얇은 레일 한 줄로 얹는다.
+   ============================================================ */
+.hero-bright {
+  position: relative;
+  overflow: hidden;
+  color: var(--fg);
+  background:
+    radial-gradient(
+      900px 440px at 10% -5%,
+      color-mix(in srgb, #ffb703 26%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      820px 460px at 92% 8%,
+      color-mix(in srgb, #4cc9f0 24%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      620px 380px at 55% 105%,
+      color-mix(in srgb, #ff6b6b 16%, transparent),
+      transparent 72%
+    ),
+    linear-gradient(135deg, #fffdf8 0%, #fff6ec 45%, #f1f6ff 100%);
+}
+
+.hero-rail {
+  display: flex;
+  height: 6px;
+}
+.hero-rail span {
+  flex: 1;
+}
+
+/* 히어로 안의 언어 바로가기 칩 — 칩마다 그 나라 색을 쓴다 */
+.hero-lang-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--brand-base) 32%, transparent);
+  color: color-mix(in srgb, var(--brand-base) 88%, #000000);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.hero-lang-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* 히어로 헤드라인 강조 */
+.hero-accent {
+  color: var(--accent);
+  font-style: normal;
+}
+
+/* 언어가 지정되지 않은 곳(홈 가격표)에서 쓰는 시그니처 계열색.
+   차콜 회색 계단은 칙칙해 보여서 따뜻한 코랄 계열로 바꾼다.
+   --brand / --on-brand 은 건드리지 않는다. 같은 요소에 걸린 [data-level] 규칙이
+   이 기준색으로 명도 계단을 다시 계산해야 하기 때문이다. */
+.tone-signature {
+  --brand-base: #cf4655;
+  --ink-light: #fff6f7;
+}
+
+@media (prefers-color-scheme: dark) {
+  .hero-bright {
+    background:
+      radial-gradient(
+        900px 440px at 10% -5%,
+        color-mix(in srgb, #ffb703 14%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        820px 460px at 92% 8%,
+        color-mix(in srgb, #4cc9f0 12%, transparent),
+        transparent 70%
+      ),
+      linear-gradient(135deg, #171a21 0%, #1b1e26 55%, #141a24 100%);
+  }
+  .hero-lang-chip {
+    background: var(--surface-2);
+    color: color-mix(in srgb, var(--brand-base) 45%, #ffffff);
+  }
+  .tone-signature {
+    --brand-base: #d4564a;
+  }
 }

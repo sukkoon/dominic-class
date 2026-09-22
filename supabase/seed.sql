@@ -1,6 +1,6 @@
 -- ============================================================================
 -- Dominic Class 시드 데이터
---   언어 4 / 레벨 3 / 유형 3 / 강사 12 / 강의 36 / 트랙 72 / 차시 432 / 숙제 864
+--   언어 4 / 레벨 3 / 유형 3 / 강사 36 / 강의 36 / 트랙 72 / 차시 432 / 숙제 864
 --
 -- 432개 차시와 864개 숙제는 손으로 쓰지 않고,
 --   · 유형×레벨 주제 축 108개 문자열
@@ -13,14 +13,16 @@
 insert into public.dc_languages
  (code,name_ko,name_native,flag_emoji,flag_emoji_alt,country_code,country_name_ko,
   theme_key,theme_mood_ko,hero_color,accent_color,ink_color,pattern_key,font_key,tagline_ko,sort_order) values
- ('en','영어','English','🇺🇸',null,'US','미국','brooklyn','뉴욕 브루클린의 자유로운 리듬',
-  '#0A2342','#D62828','#FDF6E3','stars','oswald','세계 어디서든 통하는 무기, 영어',1),
- ('ja','일본어','日本語','🇯🇵',null,'JP','일본','kyoto','교토 골목의 화지(和紙)와 남색 노렌',
-  '#1B3B6F','#E03C31','#FBF7F0','seigaiha','notoserifjp','가장 가까운 나라, 가장 섬세한 언어',2),
- ('es','스페인어','Español','🇪🇸',null,'ES','스페인','andalusia','안달루시아의 아줄레주 타일과 태양',
-  '#C1440E','#F2A104','#FFF8EC','azulejo','playfair','21개국 5억 명이 쓰는 뜨거운 언어',3),
- ('zh','중국어','中文','🇨🇳',null,'CN','중국','shanghai','상하이의 홍금(紅金)과 상운문(祥雲紋)',
-  '#C8102E','#D4A017','#FFF9F0','cloud','notoserifsc','가장 큰 시장을 여는 열쇠, 중국어',4)
+-- hero_color / accent_color / ink_color / pattern_key / font_key 는 참고값이다.
+-- 실제 렌더링 색과 서체, 모티프는 app/globals.css 의 [data-lang] 토큰이 담당한다.
+ ('en','영어','English','🇺🇸',null,'US','미국','brooklyn','뉴욕의 코발트 블루와 성조기 레드',
+  '#1D56B8','#EF3B4E','#F3F7FF','star','oswald','세계 어디서든 통하는 무기, 영어',1),
+ ('ja','일본어','日本語','🇯🇵',null,'JP','일본','sakura','벚꽃빛 로즈와 남색 藍의 대비',
+  '#C9456C','#3A5EA8','#FFF5F7','seigaiha','notoserifjp','가장 가까운 나라, 가장 섬세한 언어',2),
+ ('es','스페인어','Español','🇪🇸',null,'ES','스페인','andalusia','안달루시아의 사프란빛 태양',
+  '#B5620A','#E03131','#FFF8EE','arch','playfair','21개국 5억 명이 쓰는 뜨거운 언어',3),
+ ('zh','중국어','中文','🇨🇳',null,'CN','중국','shanghai','상하이의 홍(紅)과 금(金)',
+  '#C81E2B','#F0B429','#FFF5F2','moongate','notoserifsc','가장 큰 시장을 여는 열쇠, 중국어',4)
 on conflict (code) do nothing;
 
 insert into public.dc_levels (code,name_ko,price_krw,instructor_rule_ko,summary_ko,badge_emoji,sort_order) values
@@ -36,45 +38,124 @@ insert into public.dc_class_types (code,name_ko,tagline_ko,summary_ko,icon_emoji
 on conflict (code) do nothing;
 
 insert into public.dc_instructors
- (language_code,level_code,name_ko,name_native,nationality,nationality_ko,is_native,speaks_korean,
+ (language_code,level_code,class_type_code,name_ko,name_native,nationality,nationality_ko,is_native,speaks_korean,
   avatar_url,avatar_emoji,headline_ko,bio_ko,years_experience) values
- ('en','beginner','김서연',null,'KR','한국',false,true,
+ ('en','beginner','grammar','김서연',null,'KR','한국',false,true,
   'https://api.dicebear.com/9.x/notionists/svg?seed=en-beginner&backgroundColor=ffd5dc','👩‍🏫',
   '영문학 전공 · 왕초보 전문','알파벳도 낯선 분들을 위해 모든 설명을 한국어로 드립니다. 한국인이 어려워하는 지점을 정확히 알고 짚어드려요.',8),
- ('en','intermediate','박준호',null,'KR','한국',false,true,
+ ('en','intermediate','grammar','박준호',null,'KR','한국',false,true,
   'https://api.dicebear.com/9.x/notionists/svg?seed=en-intermediate&backgroundColor=c0aede','👨‍🏫',
   '시애틀 10년 거주 · 한영 이중언어','설명은 한국어로, 연습은 영어로. 두 언어를 오가며 중급의 벽을 넘겨드립니다.',10),
- ('en','advanced','마이클 카터','Michael Carter','US','미국',true,false,
+ ('en','advanced','grammar','마이클 카터','Michael Carter','US','미국',true,false,
   'https://api.dicebear.com/9.x/notionists/svg?seed=en-advanced&backgroundColor=d1d4f9','🧑‍🏫',
   '시카고 출신 원어민 · OPIc 코치','From day one, English only. 미국 현지 뉘앙스와 시험 전략을 동시에 잡아드립니다.',12),
- ('ja','beginner','이지훈',null,'KR','한국',false,true,
+ ('ja','beginner','grammar','이지훈',null,'KR','한국',false,true,
   'https://api.dicebear.com/9.x/notionists/svg?seed=ja-beginner&backgroundColor=ffdfbf','👨‍🏫',
   'JLPT N1 · 히라가나부터 친절하게','오십음도부터 시작합니다. 한국인에게 익숙한 한자 지식을 지렛대로 삼아 빠르게 올라갑니다.',7),
- ('ja','intermediate','최유리',null,'KR','한국',false,true,
+ ('ja','intermediate','grammar','최유리',null,'KR','한국',false,true,
   'https://api.dicebear.com/9.x/notionists/svg?seed=ja-intermediate&backgroundColor=ffd5dc','👩‍🏫',
   '오사카 8년 거주 · 한일 이중언어','경어와 보통체의 경계, 조사의 미묘한 차이를 한국어로 명쾌하게 정리해 드립니다.',9),
- ('ja','advanced','사토 미나미','佐藤 みなみ','JP','일본',true,false,
+ ('ja','advanced','grammar','사토 미나미','佐藤 みなみ','JP','일본',true,false,
   'https://api.dicebear.com/9.x/notionists/svg?seed=ja-advanced&backgroundColor=c0aede','👩‍🏫',
   '도쿄 출신 원어민 · 비즈니스 일본어','授業はすべて日本語で。현지에서 실제로 쓰는 표현과 敬語를 몸에 익히도록 이끕니다.',11),
- ('es','beginner','정민아',null,'KR','한국',false,true,
+ ('es','beginner','grammar','정민아',null,'KR','한국',false,true,
   'https://api.dicebear.com/9.x/notionists/svg?seed=es-beginner&backgroundColor=d1d4f9','👩‍🏫',
   '서어서문학 전공 · 발음 교정 전문','스페인어는 읽는 대로 발음됩니다. 그 규칙부터 한국어로 확실하게 잡아드릴게요.',6),
- ('es','intermediate','한도윤',null,'KR','한국',false,true,
+ ('es','intermediate','grammar','한도윤',null,'KR','한국',false,true,
   'https://api.dicebear.com/9.x/notionists/svg?seed=es-intermediate&backgroundColor=ffdfbf','👨‍🏫',
   '마드리드 7년 거주 · 한서 이중언어','두 개의 과거 시제, 접속법. 중급의 고비를 한국어 설명으로 가볍게 넘깁니다.',8),
- ('es','advanced','카를로스 라미레스','Carlos Ramírez','MX','멕시코',true,false,
+ ('es','advanced','grammar','카를로스 라미레스','Carlos Ramírez','MX','멕시코',true,false,
   'https://api.dicebear.com/9.x/notionists/svg?seed=es-advanced&backgroundColor=ffd5dc','🧑‍🏫',
   '멕시코시티 출신 원어민 · 중남미 스페인어','¡Solo español! 스페인과 중남미의 표현 차이까지 함께 익혀갑니다.',13),
- ('zh','beginner','오세진',null,'KR','한국',false,true,
+ ('zh','beginner','grammar','오세진',null,'KR','한국',false,true,
   'https://api.dicebear.com/9.x/notionists/svg?seed=zh-beginner&backgroundColor=c0aede','👨‍🏫',
   'HSK 6급 · 성조부터 탄탄하게','중국어의 8할은 성조입니다. 한국어로 원리를 설명하고 입에 붙을 때까지 반복합니다.',7),
- ('zh','intermediate','배하늘',null,'KR','한국',false,true,
+ ('zh','intermediate','grammar','배하늘',null,'KR','한국',false,true,
   'https://api.dicebear.com/9.x/notionists/svg?seed=zh-intermediate&backgroundColor=ffdfbf','👩‍🏫',
   '베이징 9년 거주 · 한중 이중언어','把구문과 보어, 한국어로 이해하고 중국어로 반복하면 어렵지 않습니다.',9),
- ('zh','advanced','왕메이','王梅','CN','중국',true,false,
+ ('zh','advanced','grammar','왕메이','王梅','CN','중국',true,false,
   'https://api.dicebear.com/9.x/notionists/svg?seed=zh-advanced&backgroundColor=d1d4f9','👩‍🏫',
   '베이징 출신 원어민 · 표준 보통화','全程中文授课。표준 보통화 발음과 성어까지, 현지인처럼 말하도록 만들어 드립니다.',12)
-on conflict (language_code, level_code) do nothing;
+on conflict (language_code, level_code, class_type_code) do nothing;
+
+
+-- 회화 / 시험 담당 강사 24명 (초급 한국인 / 중급 이중언어 / 고급 원어민 규칙 동일)
+insert into public.dc_instructors
+ (language_code,level_code,class_type_code,name_ko,name_native,nationality,nationality_ko,
+  is_native,speaks_korean,avatar_url,avatar_emoji,headline_ko,bio_ko,years_experience) values
+ ('en','beginner','conversation','윤하늘',null,'KR','한국',false,true,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=en-beginner-conv&backgroundColor=b6e3f4','👩‍🏫',
+  '첫 한마디를 떼는 수업','틀려도 괜찮다는 분위기를 먼저 만듭니다. 한 문장이라도 소리 내어 말하고 나가는 것이 목표예요.',6),
+ ('en','beginner','exam','장서우',null,'KR','한국',false,true,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=en-beginner-exam&backgroundColor=ffd5dc','👨‍🏫',
+  'OPIc IM 첫 도전 전문','시험이 처음이라면 배경설문부터 같이 짭니다. 외울 문장을 최소로 줄여 드려요.',7),
+ ('en','intermediate','conversation','강예린',null,'KR','한국',false,true,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=en-intermediate-conv&backgroundColor=c0aede','👩‍🏫',
+  '밴쿠버 6년 · 프리토킹 진입','할 말이 떠오르는데 입이 안 떨어지는 구간을 집중적으로 뚫어 드립니다.',8),
+ ('en','intermediate','exam','조민혁',null,'KR','한국',false,true,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=en-intermediate-exam&backgroundColor=ffdfbf','👨‍🏫',
+  'OPIc IH 공략 · 롤플레이 전문','11~13번 롤플레이에서 점수가 갈립니다. 상황별 대응 틀을 몸에 붙여 드립니다.',9),
+ ('en','advanced','conversation','에밀리 브룩스','Emily Brooks','US','미국',true,false,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=en-advanced-conv&backgroundColor=d1d4f9','👩‍🏫',
+  '보스턴 출신 원어민 · 토론과 발표','Let us argue, not recite. 근거를 세워 말하는 훈련을 English only로 진행합니다.',10),
+ ('en','advanced','exam','다니엘 리브스','Daniel Reeves','US','미국',true,false,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=en-advanced-exam&backgroundColor=b6e3f4','🧑‍🏫',
+  '시애틀 출신 원어민 · OPIc AL 전략','AL은 어휘가 아니라 구조입니다. 답변 설계부터 자기 수정까지 다듬습니다.',11),
+ ('ja','beginner','conversation','노아린',null,'KR','한국',false,true,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=ja-beginner-conv&backgroundColor=ffd5dc','👩‍🏫',
+  '첫 인사부터 또박또박','です·ます체로 인사하고 주문하는 것부터. 발음은 한국어와 비교해 짚어 드립니다.',6),
+ ('ja','beginner','exam','백건우',null,'KR','한국',false,true,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=ja-beginner-exam&backgroundColor=c0aede','👨‍🏫',
+  'OPIc 일본어 IM 입문','30초 자기소개 템플릿 하나로 시작합니다. 문장 재활용법을 알려 드려요.',7),
+ ('ja','intermediate','conversation','홍세아',null,'KR','한국',false,true,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=ja-intermediate-conv&backgroundColor=ffdfbf','👩‍🏫',
+  '교토 6년 · 반말과 경어 사이','상대에 따라 말투를 바꾸는 감각을 실제 대화로 익힙니다.',8),
+ ('ja','intermediate','exam','구본영',null,'KR','한국',false,true,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=ja-intermediate-exam&backgroundColor=d1d4f9','👨‍🏫',
+  'OPIc 일본어 IH 공략','돌발 질문에서 말이 끊기지 않게 연결어와 시간 벌기 표현을 훈련합니다.',9),
+ ('ja','advanced','conversation','다나카 유타','田中 悠太','JP','일본',true,false,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=ja-advanced-conv&backgroundColor=b6e3f4','🧑‍🏫',
+  '오사카 출신 원어민 · 회의와 발표','会議でそのまま使える日本語。완곡 표현과 뉘앙스를 실전으로 다룹니다.',10),
+ ('ja','advanced','exam','기무라 아오이','木村 あおい','JP','일본',true,false,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=ja-advanced-exam&backgroundColor=ffd5dc','👩‍🏫',
+  '요코하마 출신 원어민 · AL 전략','추상적인 주제도 구조를 잡으면 말할 수 있습니다. 그 틀을 만들어 드립니다.',11),
+ ('es','beginner','conversation','서지우',null,'KR','한국',false,true,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=es-beginner-conv&backgroundColor=ffdfbf','👩‍🏫',
+  '¡Hola! 부터 편하게','스페인어는 읽는 대로 발음되니 첫 대화가 빠릅니다. 바로 말하게 만들어 드려요.',5),
+ ('es','beginner','exam','문태윤',null,'KR','한국',false,true,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=es-beginner-exam&backgroundColor=b6e3f4','👨‍🏫',
+  'OPIc 스페인어 IM 입문','응시자가 적은 언어일수록 전략이 통합니다. 출제 범위를 좁혀 드립니다.',6),
+ ('es','intermediate','conversation','남유진',null,'KR','한국',false,true,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=es-intermediate-conv&backgroundColor=c0aede','👩‍🏫',
+  '바르셀로나 5년 · 생활 회화','현지에서 진짜 쓰는 표현만 골라 옵니다. 교재에 없는 말들이요.',7),
+ ('es','intermediate','exam','심우재',null,'KR','한국',false,true,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=es-intermediate-exam&backgroundColor=ffd5dc','👨‍🏫',
+  'OPIc 스페인어 IH 공략','두 과거 시제를 시험에서 어떻게 쓰는지가 관건입니다. 그 지점만 팝니다.',8),
+ ('es','advanced','conversation','루시아 페르난데스','Lucía Fernández','ES','스페인',true,false,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=es-advanced-conv&backgroundColor=d1d4f9','👩‍🏫',
+  '세비야 출신 원어민 · 토론 회화','¡Sin miedo! 안달루시아 억양까지 들려드리며 실전 토론을 합니다.',12),
+ ('es','advanced','exam','하비에르 모랄레스','Javier Morales','ES','스페인',true,false,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=es-advanced-exam&backgroundColor=ffdfbf','🧑‍🏫',
+  '마드리드 출신 원어민 · AL 전략','접속법을 자연스럽게 쓰면 등급이 올라갑니다. 그 감각을 만들어 드립니다.',11),
+ ('zh','beginner','conversation','임다온',null,'KR','한국',false,true,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=zh-beginner-conv&backgroundColor=b6e3f4','👩‍🏫',
+  '성조부터 입으로','눈으로 보는 대신 입으로 외웁니다. 짧은 문장을 소리로 반복해 성조를 몸에 붙입니다.',6),
+ ('zh','beginner','exam','신재호',null,'KR','한국',false,true,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=zh-beginner-exam&backgroundColor=ffd5dc','👨‍🏫',
+  'OPIc 중국어 IM 입문','성조가 흔들리면 점수가 흔들립니다. 답변 문장부터 성조로 잡습니다.',7),
+ ('zh','intermediate','conversation','고은별',null,'KR','한국',false,true,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=zh-intermediate-conv&backgroundColor=c0aede','👩‍🏫',
+  '상하이 6년 · 실전 회화','교과서 중국어와 현지 중국어의 차이를 매 시간 알려 드립니다.',8),
+ ('zh','intermediate','exam','류정한',null,'KR','한국',false,true,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=zh-intermediate-exam&backgroundColor=ffdfbf','👨‍🏫',
+  'OPIc 중국어 IH 공략','把구문과 보어를 시험 답변에 넣는 법을 집중적으로 다룹니다.',9),
+ ('zh','advanced','conversation','리웨이','李伟','CN','중국',true,false,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=zh-advanced-conv&backgroundColor=d1d4f9','🧑‍🏫',
+  '상하이 출신 원어민 · 비즈니스 회화','全程中文。협상과 미팅에서 쓰는 표현을 실제 상황극으로 익힙니다.',10),
+ ('zh','advanced','exam','장샤오위','张小雨','CN','중국',true,false,
+  'https://api.dicebear.com/9.x/notionists/svg?seed=zh-advanced-exam&backgroundColor=b6e3f4','👩‍🏫',
+  '베이징 출신 원어민 · AL 전략','성어를 한두 개만 제대로 쓰면 인상이 달라집니다. 그 선택을 도와 드립니다.',11)
+on conflict (language_code, level_code, class_type_code) do nothing;
 
 -- 강의 36개 = 4 x 3 x 3
 insert into public.dc_courses
@@ -98,7 +179,7 @@ select lg.code || '-' || lv.code || '-' || ct.code,
   cross join public.dc_levels lv
   cross join public.dc_class_types ct
   join public.dc_instructors ins
-    on ins.language_code = lg.code and ins.level_code = lv.code
+    on ins.language_code = lg.code and ins.level_code = lv.code and ins.class_type_code = ct.code
 on conflict (slug) do nothing;
 
 -- 트랙 72개 (강의당 월수금 / 토요일 전일제)

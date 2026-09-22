@@ -50,6 +50,8 @@ export type Instructor = {
   id: string;
   language_code: LanguageCode;
   level_code: LevelCode;
+  /** 강사는 (언어 × 레벨 × 유형)마다 전담이다 — 총 36명 */
+  class_type_code: ClassTypeCode;
   name_ko: string;
   name_native: string | null;
   nationality: string;
