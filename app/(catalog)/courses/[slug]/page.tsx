@@ -8,6 +8,7 @@ import { addToCart } from "@/app/actions/cart";
 import InstructorAvatar from "@/components/instructor-avatar";
 import CurriculumList from "@/components/curriculum-list";
 import CourseCard from "@/components/course-card";
+import LevelBadge from "@/components/level-badge";
 
 export async function generateStaticParams() {
   const { courses } = await getCatalog();
@@ -49,9 +50,13 @@ export default async function CourseDetailPage({
   const totalHomework = lessons.reduce((s, l) => s + l.homework.length, 0);
 
   return (
-    <div data-lang={course.language_code}>
-      {/* 히어로 */}
-      <section className="themed">
+    <div data-lang={course.language_code} data-level={course.level_code}>
+      {/* 히어로 — 국가 모티프 + 현지어 워터마크 */}
+      <section className="themed themed-hero">
+        <span className="hero-watermark display" aria-hidden="true">
+          {course.language.name_native}
+        </span>
+
         <div className="mx-auto max-w-6xl px-4 py-14">
           <nav className="mb-5 flex flex-wrap items-center gap-2 text-sm opacity-80">
             <Link href="/courses">전체 강의</Link>
@@ -63,15 +68,19 @@ export default async function CourseDetailPage({
             <span>{course.level.name_ko}</span>
           </nav>
 
+          <div className="mb-3 flex flex-wrap items-center gap-2">
+            <LevelBadge level={course.level} tone="onBrand" />
+            <span className="chip chip-on-brand">
+              {course.class_type.icon_emoji} {course.class_type.name_ko}
+            </span>
+          </div>
+
           <h1 className="display text-4xl font-bold sm:text-5xl">{course.title_ko}</h1>
           <p className="mt-3 max-w-2xl text-lg opacity-90">{course.subtitle_ko}</p>
 
           <div className="mt-6 flex flex-wrap gap-2">
             {course.highlights.map((h) => (
-              <span
-                key={h}
-                className="rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-sm font-semibold"
-              >
+              <span key={h} className="chip chip-on-brand !px-3.5 !py-1.5 !text-sm">
                 {h}
               </span>
             ))}
@@ -146,62 +155,69 @@ export default async function CourseDetailPage({
 
         {/* 신청 사이드바 */}
         <aside className="lg:sticky lg:top-24 lg:self-start">
-          <form action={addToCart} className="card p-6">
+          <form action={addToCart} className="card overflow-hidden">
             <input type="hidden" name="course_id" value={course.id} />
             <input type="hidden" name="slug" value={course.slug} />
 
-            <p className="text-3xl font-bold">
-              {formatKrw(course.price_krw)}
-              <span className="ml-1 text-sm font-normal text-[var(--muted)]">/ 월</span>
-            </p>
-            <p className="mt-1 text-sm text-[var(--muted)]">월 12차시 · 총 12시간</p>
-
-            <fieldset className="mt-6">
-              <legend className="mb-2 text-sm font-bold">수업 일정 선택</legend>
-              <div className="space-y-2">
-                {course.tracks.map((t, i) => (
-                  <label key={t.id} className="block cursor-pointer">
-                    <input
-                      type="radio"
-                      name="track_id"
-                      value={t.id}
-                      defaultChecked={i === 0}
-                      required
-                      className="peer sr-only"
-                    />
-                    <div className="rounded-xl border border-[var(--border)] p-4 transition peer-checked:border-[var(--accent)] peer-checked:bg-[color-mix(in_srgb,var(--accent)_10%,transparent)]">
-                      <p className="text-sm font-bold">{t.label_ko}</p>
-                      <p className="mt-1 text-xs text-[var(--muted)]">
-                        {t.days_label_ko} · {t.time_label_ko}
-                      </p>
-                      <p className="mt-1 text-xs text-[var(--muted)]">
-                        월 {t.days_per_month}일 등원 · {t.lessons_per_month}차시
-                      </p>
-                    </div>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-
-            <div className="mt-5">
-              <label htmlFor="start_month" className="mb-1.5 block text-sm font-bold">
-                수강 시작월
-              </label>
-              <select id="start_month" name="start_month" defaultValue={months[0]} required>
-                {months.map((m) => (
-                  <option key={m} value={m}>
-                    {formatMonth(m)}
-                  </option>
-                ))}
-              </select>
+            <div className="themed px-6 py-5">
+              <p className="text-xs font-semibold opacity-85">
+                {course.language.flag_emoji} {course.language.name_ko} · {course.level.name_ko}
+              </p>
+              <p className="display mt-1 text-3xl font-bold">
+                {formatKrw(course.price_krw)}
+                <span className="ml-1 text-sm font-normal opacity-80">/ 월</span>
+              </p>
+              <p className="mt-0.5 text-xs opacity-80">월 12차시 · 총 12시간</p>
             </div>
 
-            <button type="submit" className="btn btn-primary mt-6 w-full !py-3">
-              장바구니에 담기
-            </button>
-            <p className="mt-3 text-center text-xs text-[var(--muted)]">
-              결제 후 마이페이지에서 진도와 숙제를 관리할 수 있습니다.
-            </p>
+            <div className="p-6">
+              <fieldset>
+                <legend className="mb-2 text-sm font-bold">수업 일정 선택</legend>
+                <div className="space-y-2">
+                  {course.tracks.map((t, i) => (
+                    <label key={t.id} className="block cursor-pointer">
+                      <input
+                        type="radio"
+                        name="track_id"
+                        value={t.id}
+                        defaultChecked={i === 0}
+                        required
+                        className="peer sr-only"
+                      />
+                      <div className="rounded-xl border border-[var(--border)] p-4 transition peer-checked:border-[var(--accent)] peer-checked:bg-[color-mix(in_srgb,var(--accent)_10%,transparent)]">
+                        <p className="text-sm font-bold">{t.label_ko}</p>
+                        <p className="mt-1 text-xs text-[var(--muted)]">
+                          {t.days_label_ko} · {t.time_label_ko}
+                        </p>
+                        <p className="mt-1 text-xs text-[var(--muted)]">
+                          월 {t.days_per_month}일 등원 · {t.lessons_per_month}차시
+                        </p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <div className="mt-5">
+                <label htmlFor="start_month" className="mb-1.5 block text-sm font-bold">
+                  수강 시작월
+                </label>
+                <select id="start_month" name="start_month" defaultValue={months[0]} required>
+                  {months.map((m) => (
+                    <option key={m} value={m}>
+                      {formatMonth(m)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <button type="submit" className="btn btn-primary mt-6 w-full !py-3">
+                장바구니에 담기
+              </button>
+              <p className="mt-3 text-center text-xs text-[var(--muted)]">
+                결제 후 마이페이지에서 진도와 숙제를 관리할 수 있습니다.
+              </p>
+            </div>
           </form>
 
           <div className="card mt-5 p-6 text-sm">

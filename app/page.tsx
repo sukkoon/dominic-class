@@ -11,9 +11,7 @@ export default async function HomePage() {
       {/* 히어로 */}
       <section className="themed">
         <div className="mx-auto max-w-6xl px-4 py-20 sm:py-28">
-          <p className="chip chip-accent mb-5 !bg-white/15 !text-[var(--on-brand)] !border-white/25">
-            20~40대를 위한 외국어 클래스
-          </p>
+          <p className="chip chip-on-brand mb-5">20~40대를 위한 외국어 클래스</p>
           <h1 className="display max-w-3xl text-4xl font-bold leading-[1.15] sm:text-6xl">
             퇴근하고 한 시간,
             <br />
@@ -28,7 +26,7 @@ export default async function HomePage() {
           <div className="mt-9 flex flex-wrap gap-3">
             <Link
               href="/courses"
-              className="btn !bg-[var(--on-brand)] !text-[var(--brand)] !px-6 !py-3"
+              className="btn !bg-[var(--on-brand)] !text-[var(--brand-base)] !px-6 !py-3"
             >
               전체 {courses.length}개 강의 보기
             </Link>
@@ -42,11 +40,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 언어 4종 */}
+      {/* 언어 4종 — 카드마다 그 나라 국기 두 색 + 국가 모티프 */}
       <section className="mx-auto max-w-6xl px-4 py-16">
         <div className="mb-8">
           <h2 className="display text-2xl font-bold sm:text-3xl">어떤 언어를 시작할까요?</h2>
-          <p className="prose-muted mt-2">각 언어 페이지는 그 나라의 분위기로 꾸며 두었습니다.</p>
+          <p className="prose-muted mt-2">각 언어 페이지는 그 나라의 색과 서체로 꾸며 두었습니다.</p>
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -55,11 +53,14 @@ export default async function HomePage() {
               key={l.code}
               href={"/languages/" + l.code}
               data-lang={l.code}
-              className="themed group flex flex-col rounded-[var(--radius)] p-6 transition hover:-translate-y-1 hover:shadow-[var(--shadow-lg)]"
+              data-level="advanced"
+              className="themed themed-duo themed-motif group flex flex-col rounded-[var(--radius)] p-6 transition hover:-translate-y-1 hover:shadow-[var(--shadow-lg)]"
             >
               <div className="flex items-center gap-2 text-4xl">
                 <span>{l.flag_emoji}</span>
-                {l.flag_emoji_alt ? <span className="text-2xl opacity-80">{l.flag_emoji_alt}</span> : null}
+                {l.flag_emoji_alt ? (
+                  <span className="text-2xl opacity-80">{l.flag_emoji_alt}</span>
+                ) : null}
               </div>
               <h3 className="display mt-4 text-2xl font-bold">{l.name_ko}</h3>
               <p className="display text-sm opacity-75">{l.name_native}</p>
@@ -73,37 +74,46 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 레벨 · 가격 */}
+      {/* 레벨 · 가격 — 옅은 색에서 짙은 색으로 */}
       <section className="border-y border-[var(--border)] bg-[var(--surface-2)]">
         <div className="mx-auto max-w-6xl px-4 py-16">
           <div className="mb-8">
             <h2 className="display text-2xl font-bold sm:text-3xl">레벨과 수강료</h2>
             <p className="prose-muted mt-2">
-              레벨이 올라갈수록 선생님이 달라집니다. 수강료는 모두 월 단위입니다.
+              레벨이 올라갈수록 색이 짙어지고, 가르치는 선생님도 달라집니다.
             </p>
           </div>
 
           <div className="grid gap-5 md:grid-cols-3">
             {levels.map((lv) => (
-              <div key={lv.code} className="card flex flex-col p-6">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-bold">
-                    {lv.badge_emoji} {lv.name_ko}
-                  </h3>
-                  <span className="chip chip-accent">{lv.instructor_rule_ko}</span>
+              <div key={lv.code} data-level={lv.code} className="card flex flex-col overflow-hidden">
+                <div className="themed px-6 py-5">
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="display text-xl font-bold">
+                      {lv.badge_emoji} {lv.name_ko}
+                    </h3>
+                    <span className="level-meter" aria-hidden="true">
+                      {[1, 2, 3].map((i) => (
+                        <i key={i} data-on={i <= lv.sort_order ? "" : undefined} />
+                      ))}
+                    </span>
+                  </div>
+                  <p className="mt-1.5 text-sm font-semibold opacity-90">
+                    {lv.instructor_rule_ko}
+                  </p>
                 </div>
-                <p className="prose-muted mt-3 text-sm">{lv.summary_ko}</p>
-                <p className="mt-6 text-3xl font-bold">
-                  {formatKrw(lv.price_krw)}
-                  <span className="ml-1 text-sm font-normal text-[var(--muted)]">/ 월</span>
-                </p>
-                <p className="mt-1 text-xs text-[var(--muted)]">월 12차시 · 총 12시간</p>
-                <Link
-                  href={"/courses?level=" + lv.code}
-                  className="btn btn-ghost mt-6 w-full"
-                >
-                  {lv.name_ko} 클래스 보기
-                </Link>
+
+                <div className="flex flex-1 flex-col p-6">
+                  <p className="prose-muted text-sm">{lv.summary_ko}</p>
+                  <p className="mt-6 text-3xl font-bold">
+                    {formatKrw(lv.price_krw)}
+                    <span className="ml-1 text-sm font-normal text-[var(--muted)]">/ 월</span>
+                  </p>
+                  <p className="mt-1 text-xs text-[var(--muted)]">월 12차시 · 총 12시간</p>
+                  <Link href={"/courses?level=" + lv.code} className="btn btn-ghost mt-6 w-full">
+                    {lv.name_ko} 클래스 보기
+                  </Link>
+                </div>
               </div>
             ))}
           </div>
@@ -207,17 +217,25 @@ export default async function HomePage() {
             .slice()
             .sort((a, b) => a.language_code.localeCompare(b.language_code))
             .map((ins) => (
-              <div key={ins.id} data-lang={ins.language_code} className="card p-4 text-center">
-                <div className="flex justify-center">
-                  <InstructorAvatar
-                    url={ins.avatar_url}
-                    emoji={ins.avatar_emoji}
-                    name={ins.name_ko}
-                    size={56}
-                  />
+              <div
+                key={ins.id}
+                data-lang={ins.language_code}
+                data-level={ins.level_code}
+                className="card overflow-hidden text-center"
+              >
+                <div className="themed h-1.5" />
+                <div className="p-4">
+                  <div className="flex justify-center">
+                    <InstructorAvatar
+                      url={ins.avatar_url}
+                      emoji={ins.avatar_emoji}
+                      name={ins.name_ko}
+                      size={56}
+                    />
+                  </div>
+                  <p className="mt-3 truncate text-sm font-semibold">{ins.name_ko}</p>
+                  <p className="truncate text-xs text-[var(--muted)]">{ins.nationality_ko}</p>
                 </div>
-                <p className="mt-3 truncate text-sm font-semibold">{ins.name_ko}</p>
-                <p className="truncate text-xs text-[var(--muted)]">{ins.nationality_ko}</p>
               </div>
             ))}
         </div>

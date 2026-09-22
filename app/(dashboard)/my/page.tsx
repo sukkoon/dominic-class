@@ -154,6 +154,7 @@ export default async function MyPage() {
                 <li
                   key={e.id}
                   data-lang={course?.language_code}
+                  data-level={course?.level_code}
                   className="card overflow-hidden"
                 >
                   <div className="themed flex flex-wrap items-center justify-between gap-3 px-6 py-4">

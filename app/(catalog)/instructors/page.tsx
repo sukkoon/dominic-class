@@ -61,7 +61,11 @@ export default async function InstructorsPage() {
                   (c) => c.language_code === lang.code && c.level_code === ins.level_code,
                 );
                 return (
-                  <article key={ins.id} className="card overflow-hidden">
+                  <article
+                    key={ins.id}
+                    data-level={ins.level_code}
+                    className="card overflow-hidden"
+                  >
                     <div className="themed flex items-center gap-4 px-5 py-5">
                       <InstructorAvatar
                         url={ins.avatar_url}

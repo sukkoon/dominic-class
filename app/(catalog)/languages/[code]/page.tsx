@@ -5,6 +5,7 @@ import { getCatalog } from "@/lib/queries";
 import { formatKrw } from "@/lib/format";
 import CourseCard from "@/components/course-card";
 import InstructorAvatar from "@/components/instructor-avatar";
+import LevelBadge from "@/components/level-badge";
 import type { LanguageCode } from "@/lib/types";
 
 export async function generateStaticParams() {
@@ -41,12 +42,18 @@ export default async function LanguagePage({ params }: { params: Promise<{ code:
 
   return (
     <div>
-      {/* 언어 테마 히어로 */}
-      <section className="themed">
+      {/* 언어 테마 히어로 — 현지어 워터마크 + 국가 모티프 */}
+      <section className="themed themed-hero">
+        <span className="hero-watermark display" aria-hidden="true">
+          {lang.name_native}
+        </span>
+
         <div className="mx-auto max-w-6xl px-4 py-20 sm:py-24">
           <div className="flex items-center gap-3 text-5xl">
             <span>{lang.flag_emoji}</span>
-            {lang.flag_emoji_alt ? <span className="text-3xl opacity-80">{lang.flag_emoji_alt}</span> : null}
+            {lang.flag_emoji_alt ? (
+              <span className="text-3xl opacity-80">{lang.flag_emoji_alt}</span>
+            ) : null}
           </div>
           <p className="display mt-5 text-lg opacity-80">{lang.name_native}</p>
           <h1 className="display mt-1 text-4xl font-bold sm:text-5xl">{lang.name_ko} 클래스</h1>
@@ -57,10 +64,12 @@ export default async function LanguagePage({ params }: { params: Promise<{ code:
 
           <div className="mt-8 flex flex-wrap gap-2">
             {levels.map((lv) => (
-              <span
-                key={lv.code}
-                className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold"
-              >
+              <span key={lv.code} className="chip chip-on-brand !px-4 !py-2 !text-sm">
+                <span className="level-meter" aria-hidden="true">
+                  {[1, 2, 3].map((i) => (
+                    <i key={i} data-on={i <= lv.sort_order ? "" : undefined} />
+                  ))}
+                </span>
                 {lv.name_ko} {formatKrw(lv.price_krw)} / 월
               </span>
             ))}
@@ -68,7 +77,7 @@ export default async function LanguagePage({ params }: { params: Promise<{ code:
         </div>
       </section>
 
-      {/* 강사 3인 */}
+      {/* 강사 3인 — 레벨이 올라갈수록 카드 헤더가 짙어진다 */}
       <section className="mx-auto max-w-6xl px-4 py-14">
         <h2 className="display mb-6 text-2xl font-bold">
           {lang.name_ko}를 가르치는 세 분의 선생님
@@ -77,7 +86,12 @@ export default async function LanguagePage({ params }: { params: Promise<{ code:
           {langInstructors.map((ins) => {
             const level = levels.find((l) => l.code === ins.level_code);
             return (
-              <div key={ins.id} data-lang={lang.code} className="card overflow-hidden">
+              <div
+                key={ins.id}
+                data-lang={lang.code}
+                data-level={ins.level_code}
+                className="card overflow-hidden"
+              >
                 <div className="themed flex items-center gap-4 px-5 py-4">
                   <InstructorAvatar
                     url={ins.avatar_url}
@@ -95,6 +109,7 @@ export default async function LanguagePage({ params }: { params: Promise<{ code:
                 </div>
                 <div className="p-5">
                   <div className="flex flex-wrap gap-1.5">
+                    {level ? <LevelBadge level={level} /> : null}
                     <span className="chip">{ins.nationality_ko}</span>
                     <span className="chip">{ins.is_native ? "원어민" : "한국인"}</span>
                     <span className="chip">경력 {ins.years_experience}년</span>
@@ -114,13 +129,15 @@ export default async function LanguagePage({ params }: { params: Promise<{ code:
           const group = langCourses.filter((c) => c.level_code === lv.code);
           if (group.length === 0) return null;
           return (
-            <div key={lv.code} className="mb-12">
-              <div className="mb-5 flex flex-wrap items-baseline gap-3">
-                <h2 className="display text-2xl font-bold">
-                  {lv.badge_emoji} {lang.name_ko} {lv.name_ko}
+            <div key={lv.code} data-lang={lang.code} data-level={lv.code} className="mb-12">
+              <div className="themed mb-5 flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius)] px-5 py-4">
+                <h2 className="display text-xl font-bold sm:text-2xl">
+                  {lang.name_ko} {lv.name_ko}
                 </h2>
-                <span className="chip chip-accent">{lv.instructor_rule_ko}</span>
-                <span className="text-sm text-[var(--muted)]">{formatKrw(lv.price_krw)} / 월</span>
+                <div className="flex flex-wrap items-center gap-2 text-sm">
+                  <span className="chip chip-on-brand">{lv.instructor_rule_ko}</span>
+                  <span className="font-semibold">{formatKrw(lv.price_krw)} / 월</span>
+                </div>
               </div>
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {group.map((c) => (

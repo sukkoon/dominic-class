@@ -82,8 +82,8 @@ export default async function ProgressPage({
   const isSaturday = track?.track_type === "SAT";
 
   return (
-    <div data-lang={course?.language_code} className="pb-16">
-      <section className="themed">
+    <div data-lang={course?.language_code} data-level={course?.level_code} className="pb-16">
+      <section className="themed themed-hero">
         <div className="mx-auto max-w-4xl px-4 py-12">
           <nav className="mb-4 text-sm opacity-80">
             <Link href="/my">← 내 강의실</Link>

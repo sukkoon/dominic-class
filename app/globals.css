@@ -2,8 +2,13 @@
 
 /* ============================================================
    Dominic Class — 전역 디자인 토큰
-   타겟 20~40대: 모던·고대비 타이포 + 언어별 컬러 테마
-   배경은 단색 기반으로 단정하게 유지한다 (반복 패턴·장식 그래픽 없음)
+
+   두 축으로 구분한다.
+   ① 언어 : 컬러 계열 + 디스플레이 서체 + 히어로 모티프 1개  ([data-lang])
+   ② 레벨 : 같은 계열 안에서 옅음 → 중간 → 짙음 명도 계단     ([data-level])
+
+   배경은 단색 기반. 반복 패턴은 쓰지 않고, 히어로에만 큰 모티프
+   도형 하나를 아주 낮은 농도로 얹어 국가 느낌을 낸다.
    ============================================================ */
 
 :root {
@@ -14,12 +19,17 @@
   --muted: #6f6b66;
   --border: #e5e1db;
 
-  /* 기본(브랜드) 테마 — 언어 페이지에서 [data-lang]이 덮어쓴다 */
-  --brand: #16181d;
+  /* 언어 계열의 기준색. [data-lang]이 덮어쓴다. */
+  --brand-base: #16181d;
   --accent: #e2574c;
   --ink: #faf9f7;
-  --on-brand: #ffffff;
+  --ink-light: #ffffff;
   --display: "Oswald", "Pretendard Variable", sans-serif;
+  --motif: none;
+
+  /* 레벨 미지정 시 기준색 그대로 */
+  --brand: var(--brand-base);
+  --on-brand: var(--ink-light);
 
   --radius: 14px;
   --shadow-sm: 0 1px 2px rgb(22 24 29 / 0.06), 0 1px 3px rgb(22 24 29 / 0.05);
@@ -27,40 +37,77 @@
   --shadow-lg: 0 18px 40px rgb(22 24 29 / 0.12);
 }
 
-/* ----- 🇺🇸 영어 : 뉴욕 네이비 ----- */
+/* ─────────── 언어별 계열 ─────────── */
+
+/* 🇺🇸 영어 — 뉴욕 네이비. 모티프: 별 하나 */
 [data-lang="en"] {
-  --brand: #0a2342;
+  /* :root 에서 치환이 끝나지 않도록 계열 블록에서 다시 선언한다 */
+  --brand: var(--brand-base);
+  --on-brand: var(--ink-light);
+  --brand-base: #0a2342;
   --accent: #d62828;
   --ink: #fdf6e3;
-  --on-brand: #f7f3ea;
+  --ink-light: #f7f3ea;
   --display: "Oswald", "Pretendard Variable", sans-serif;
+  --motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 5 61 39 97 39 68 61 79 95 50 74 21 95 32 61 3 39 39 39Z' fill='none' stroke='%23000' stroke-width='2.4'/%3E%3Cpath d='M50 24 55 39 71 39 58 49 63 64 50 55 37 64 42 49 29 39 45 39Z' fill='none' stroke='%23000' stroke-width='1.4'/%3E%3C/svg%3E");
 }
 
-/* ----- 🇯🇵 일본어 : 교토 남색(藍) ----- */
+/* 🇯🇵 일본어 — 교토 남색(藍). 모티프: 해 원 하나 + 세이가이하 한 겹 */
 [data-lang="ja"] {
-  --brand: #1b3b6f;
+  /* :root 에서 치환이 끝나지 않도록 계열 블록에서 다시 선언한다 */
+  --brand: var(--brand-base);
+  --on-brand: var(--ink-light);
+  --brand-base: #1b3b6f;
   --accent: #e03c31;
   --ink: #fbf7f0;
-  --on-brand: #f6f2ea;
+  --ink-light: #f6f2ea;
   --display: "Noto Serif JP", "Pretendard Variable", serif;
+  --motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='40' r='29' fill='none' stroke='%23000' stroke-width='2.4'/%3E%3Cg fill='none' stroke='%23000' stroke-width='1.8'%3E%3Cpath d='M12 94a38 38 0 0 1 76 0'/%3E%3Cpath d='M25 94a25 25 0 0 1 50 0'/%3E%3Cpath d='M38 94a12 12 0 0 1 24 0'/%3E%3C/g%3E%3C/svg%3E");
 }
 
-/* ----- 🇪🇸 스페인어 : 안달루시아 테라코타 ----- */
+/* 🇪🇸 스페인어 — 안달루시아 테라코타. 모티프: 무데하르 말굽 아치 */
 [data-lang="es"] {
-  --brand: #a83a10;
+  /* :root 에서 치환이 끝나지 않도록 계열 블록에서 다시 선언한다 */
+  --brand: var(--brand-base);
+  --on-brand: var(--ink-light);
+  --brand-base: #a83a10;
   --accent: #e08900;
   --ink: #fff8ec;
-  --on-brand: #fff6e8;
+  --ink-light: #fff6e8;
   --display: "Playfair Display", "Pretendard Variable", serif;
+  --motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%23000' stroke-width='2.4'%3E%3Cpath d='M20 96V50a30 30 0 0 1 60 0v46'/%3E%3C/g%3E%3Cg fill='none' stroke='%23000' stroke-width='1.5'%3E%3Cpath d='M29 96V50a21 21 0 0 1 42 0v46'/%3E%3Cpath d='M50 20v-8M50 28a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z'/%3E%3C/g%3E%3C/svg%3E");
 }
 
-/* ----- 🇨🇳 중국어 : 상하이 홍(紅) ----- */
+/* 🇨🇳 중국어 — 상하이 홍(紅). 모티프: 원형 월동문 + 격자 */
 [data-lang="zh"] {
-  --brand: #a5122a;
+  /* :root 에서 치환이 끝나지 않도록 계열 블록에서 다시 선언한다 */
+  --brand: var(--brand-base);
+  --on-brand: var(--ink-light);
+  --brand-base: #a5122a;
   --accent: #c99700;
   --ink: #fff9f0;
-  --on-brand: #fdf3ea;
+  --ink-light: #fdf3ea;
   --display: "Noto Serif SC", "Pretendard Variable", serif;
+  --motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='34' fill='none' stroke='%23000' stroke-width='2.4'/%3E%3Ccircle cx='50' cy='50' r='25' fill='none' stroke='%23000' stroke-width='1.4'/%3E%3Cg fill='none' stroke='%23000' stroke-width='1.4'%3E%3Cpath d='M50 16v68M16 50h68'/%3E%3Cpath d='M34 34h32v32H34z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ─────────── 레벨별 명도 계단 ───────────
+   초급 옅음(짙은 글자) → 중급 중간(짙은 글자) → 고급 짙음(밝은 글자) */
+
+[data-level="beginner"] {
+  --brand: color-mix(in srgb, var(--brand-base) 14%, #ffffff);
+  --on-brand: color-mix(in srgb, var(--brand-base) 88%, #000000);
+  --level-step: 1;
+}
+[data-level="intermediate"] {
+  --brand: color-mix(in srgb, var(--brand-base) 45%, #ffffff);
+  --on-brand: color-mix(in srgb, var(--brand-base) 88%, #000000);
+  --level-step: 2;
+}
+[data-level="advanced"] {
+  --brand: var(--brand-base);
+  --on-brand: var(--ink-light);
+  --level-step: 3;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -72,10 +119,18 @@
     --muted: #9a958e;
     --border: #2a2d35;
   }
-  [data-lang="en"] { --brand: #0e2d55; --ink: #131720; }
-  [data-lang="ja"] { --brand: #1f4680; --ink: #12161f; }
-  [data-lang="es"] { --brand: #96340e; --ink: #1d160f; }
-  [data-lang="zh"] { --brand: #95101f; --ink: #1c1210; }
+  [data-lang="en"] { --brand-base: #123a6b; --ink: #131720; }
+  [data-lang="ja"] { --brand-base: #22508f; --ink: #12161f; }
+  [data-lang="es"] { --brand-base: #b8420f; --ink: #1d160f; }
+  [data-lang="zh"] { --brand-base: #b3162f; --ink: #1c1210; }
+
+  /* 다크모드에서는 초급·중급도 너무 밝아지지 않게 폭을 좁힌다 */
+  [data-level="beginner"] {
+    --brand: color-mix(in srgb, var(--brand-base) 26%, #ffffff);
+  }
+  [data-level="intermediate"] {
+    --brand: color-mix(in srgb, var(--brand-base) 55%, #ffffff);
+  }
 }
 
 @theme inline {
@@ -86,6 +141,7 @@
   --color-muted: var(--muted);
   --color-line: var(--border);
   --color-brand: var(--brand);
+  --color-brand-base: var(--brand-base);
   --color-accent: var(--accent);
   --color-ink: var(--ink);
   --color-on-brand: var(--on-brand);
@@ -113,16 +169,16 @@ body {
 a { color: inherit; text-decoration: none; }
 
 /*
- * 언어 테마 표면.
- * 배경은 브랜드 단색에 아주 완만한 세로 그라데이션만 얹고,
- * 상단에 액센트 라인 한 줄로 언어를 구분한다.
+ * 언어·레벨 테마 표면.
+ * 단색에 완만한 대각 그라데이션(액센트를 아주 조금 섞어 깊이만)과
+ * 상단 액센트 라인 한 줄.
  */
 .themed {
   position: relative;
   background: linear-gradient(
-    180deg,
-    var(--brand),
-    color-mix(in srgb, var(--brand) 88%, #000) 100%
+    135deg,
+    color-mix(in srgb, var(--brand) 93%, var(--accent)),
+    color-mix(in srgb, var(--brand) 86%, #000) 100%
   );
   color: var(--on-brand);
   overflow: hidden;
@@ -134,12 +190,63 @@ a { color: inherit; text-decoration: none; }
   top: 0;
   height: 3px;
   background: var(--accent);
+  z-index: 1;
+}
+.themed > * { position: relative; z-index: 1; }
+
+/* 히어로에만 큰 모티프 도형 하나. mask로 칠해 옅은 배경에서도 보인다. */
+[data-lang] .themed-hero::after {
+  content: "";
+  position: absolute;
+  right: -3%;
+  top: 50%;
+  translate: 0 -50%;
+  width: min(400px, 46%);
+  aspect-ratio: 1;
+  background: var(--on-brand);
+  -webkit-mask: var(--motif) center / contain no-repeat;
+  mask: var(--motif) center / contain no-repeat;
+  opacity: 0.14;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 히어로 좌하단 현지어 워터마크 */
+.hero-watermark {
+  position: absolute;
+  left: 0;
+  bottom: -0.22em;
+  font-size: clamp(4.5rem, 14vw, 11rem);
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0.08;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
 }
 
 .display {
   font-family: var(--display), "Noto Color Emoji", "Apple Color Emoji";
   letter-spacing: 0.01em;
 }
+
+/* 레벨 강도 미터 — 옅음 1칸 / 중간 2칸 / 짙음 3칸 */
+.level-meter {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+.level-meter i {
+  display: block;
+  width: 3px;
+  border-radius: 1px;
+  background: color-mix(in srgb, var(--brand-base) 22%, transparent);
+}
+.level-meter i:nth-child(1) { height: 5px; }
+.level-meter i:nth-child(2) { height: 8px; }
+.level-meter i:nth-child(3) { height: 11px; }
+.level-meter i[data-on] { background: var(--brand-base); }
 
 /* 재사용 컴포넌트 클래스 */
 .card {
@@ -164,7 +271,8 @@ a { color: inherit; text-decoration: none; }
 }
 .btn:active { transform: translateY(1px); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn-primary { background: var(--brand); color: var(--on-brand); }
+/* CTA는 레벨 명도에 휘둘리지 않게 계열 기준색을 쓴다 */
+.btn-primary { background: var(--brand-base); color: var(--ink-light); }
 .btn-primary:hover:not(:disabled) { box-shadow: var(--shadow-md); }
 .btn-accent { background: var(--accent); color: #fff; }
 .btn-ghost { background: transparent; border-color: var(--border); color: var(--fg); }
@@ -183,11 +291,22 @@ a { color: inherit; text-decoration: none; }
   color: var(--muted);
   white-space: nowrap;
 }
-.chip-solid { background: var(--brand); color: var(--on-brand); border-color: transparent; }
+.chip-solid { background: var(--brand-base); color: var(--ink-light); border-color: transparent; }
 .chip-accent {
   background: color-mix(in srgb, var(--accent) 12%, transparent);
   color: var(--accent);
   border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.chip-level {
+  background: color-mix(in srgb, var(--brand-base) 8%, transparent);
+  color: color-mix(in srgb, var(--brand-base) 90%, #000);
+  border-color: color-mix(in srgb, var(--brand-base) 24%, transparent);
+}
+/* 히어로처럼 브랜드 배경 위에 얹는 칩 */
+.chip-on-brand {
+  background: color-mix(in srgb, var(--on-brand) 14%, transparent);
+  border-color: color-mix(in srgb, var(--on-brand) 28%, transparent);
+  color: var(--on-brand);
 }
 
 .prose-muted { color: var(--muted); line-height: 1.75; }
@@ -204,4 +323,43 @@ input[type="text"], input[type="email"], input[type="password"], select, textare
 input:focus, select:focus, textarea:focus {
   outline: 2px solid color-mix(in srgb, var(--accent) 60%, transparent);
   outline-offset: 1px;
+}
+
+/* 브랜드 배경 위의 레벨 미터는 on-brand 색을 따른다 */
+.chip-on-brand .level-meter i,
+.themed .level-meter i {
+  background: color-mix(in srgb, var(--on-brand) 28%, transparent);
+}
+.chip-on-brand .level-meter i[data-on],
+.themed .level-meter i[data-on] {
+  background: var(--on-brand);
+}
+
+/*
+ * 국기 두 색을 함께 쓰는 2톤 표면 — 언어 카드용.
+ * 미국 네이비→레드, 일본 남색→주홍, 스페인 테라코타→사프란, 중국 홍→금.
+ */
+.themed-duo {
+  background: linear-gradient(
+    150deg,
+    var(--brand) 0%,
+    var(--brand) 50%,
+    color-mix(in srgb, var(--accent) 86%, #000) 100%
+  );
+}
+
+/* 카드 모서리에 작은 국가 모티프 하나 */
+[data-lang] .themed-motif::after {
+  content: "";
+  position: absolute;
+  right: -14px;
+  bottom: -22px;
+  width: 136px;
+  height: 136px;
+  background: var(--on-brand);
+  -webkit-mask: var(--motif) center / contain no-repeat;
+  mask: var(--motif) center / contain no-repeat;
+  opacity: 0.16;
+  pointer-events: none;
+  z-index: 0;
 }

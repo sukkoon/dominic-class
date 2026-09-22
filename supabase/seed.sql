@@ -17,7 +17,7 @@ insert into public.dc_languages
   '#0A2342','#D62828','#FDF6E3','stars','oswald','세계 어디서든 통하는 무기, 영어',1),
  ('ja','일본어','日本語','🇯🇵',null,'JP','일본','kyoto','교토 골목의 화지(和紙)와 남색 노렌',
   '#1B3B6F','#E03C31','#FBF7F0','seigaiha','notoserifjp','가장 가까운 나라, 가장 섬세한 언어',2),
- ('es','스페인어','Español','🇪🇸','🇲🇽','ES','스페인 · 멕시코','andalusia','안달루시아의 아줄레주 타일과 태양',
+ ('es','스페인어','Español','🇪🇸',null,'ES','스페인','andalusia','안달루시아의 아줄레주 타일과 태양',
   '#C1440E','#F2A104','#FFF8EC','azulejo','playfair','21개국 5억 명이 쓰는 뜨거운 언어',3),
  ('zh','중국어','中文','🇨🇳',null,'CN','중국','shanghai','상하이의 홍금(紅金)과 상운문(祥雲紋)',
   '#C8102E','#D4A017','#FFF9F0','cloud','notoserifsc','가장 큰 시장을 여는 열쇠, 중국어',4)
