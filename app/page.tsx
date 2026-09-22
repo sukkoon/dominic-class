@@ -286,7 +286,7 @@ export default async function HomePage() {
             </p>
           </div>
           <Link href="/instructors" className="btn btn-ghost shrink-0">
-            학력 · 경력 자세히 보기
+            강사 상세정보 보기
           </Link>
         </div>
 
