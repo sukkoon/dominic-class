@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { tossClientKey } from "@/lib/env";
 import { formatKrw, formatMonth } from "@/lib/format";
 import type { Course, ScheduleTrack } from "@/lib/types";
 import TossWidget from "./_components/toss-widget";
@@ -46,6 +47,7 @@ export default async function CheckoutPage() {
 
         <div className="card mt-6 p-2 sm:p-4">
           <TossWidget
+            clientKey={tossClientKey() ?? ""}
             amount={total}
             customerKey={user.id}
             customerEmail={user.email ?? ""}

@@ -148,12 +148,20 @@ npm run dev
 
 | 이름 | 설명 |
 |---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase 프로젝트 URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon 키 |
-| `SUPABASE_SERVICE_ROLE_KEY` | **서버 전용.** 결제 승인 시 주문 확정·수강 생성에 사용. `NEXT_PUBLIC_` 접두사를 붙이면 안 됩니다 |
-| `NEXT_PUBLIC_TOSS_CLIENT_KEY` | 토스페이먼츠 클라이언트 키 (테스트: `test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm`) |
+| `SUPABASE_URL` | Supabase 프로젝트 URL |
+| `SUPABASE_ANON_KEY` | Supabase anon 키 |
+| `SUPABASE_SERVICE_ROLE_KEY` | **서버 전용.** 결제 승인 시 주문 확정·수강 생성에 사용 |
+| `TOSS_CLIENT_KEY` | 토스페이먼츠 클라이언트 키 (테스트: `test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm`) |
 | `TOSS_SECRET_KEY` | 토스페이먼츠 시크릿 키 (테스트: `test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6`) |
-| `NEXT_PUBLIC_SITE_URL` | 결제 `successUrl` / `failUrl` 생성용 절대 URL |
+| `SITE_URL` | 결제 `successUrl` / `failUrl` 생성용 절대 URL |
+
+환경변수를 읽는 곳은 [`lib/env.ts`](lib/env.ts) 한 군데로 모았습니다.
+각 접근자는 **접두사 없는 이름을 먼저 보고, 없으면 `NEXT_PUBLIC_` 붙은 이름**으로 넘어가므로
+어느 쪽 이름으로 등록해도 동작합니다.
+
+`TOSS_CLIENT_KEY`는 브라우저에서 쓰이지만 `NEXT_PUBLIC_` 접두사가 없으면 클라이언트 번들에
+인라인되지 않습니다. 그래서 서버 컴포넌트 `app/checkout/page.tsx`가 값을 읽어
+결제 위젯에 `clientKey` props로 내려줍니다. 브라우저에서 `process.env`를 직접 읽는 코드는 없습니다.
 
 ---
 
@@ -236,11 +244,11 @@ supabase/seed.sql                                            시드 데이터
    `Production` · `Preview` · `Development` 세 환경 모두에 넣어야 프리뷰 배포에서도 동작합니다
 4. **Deploy**
 5. 배포 도메인이 나오면
-   - `NEXT_PUBLIC_SITE_URL` 을 그 도메인으로 수정하고 재배포
+   - `SITE_URL` 을 그 도메인으로 수정하고 재배포
    - Supabase 대시보드 → **Authentication → URL Configuration** 의 Redirect URLs에
      `https://<도메인>/auth/callback` 과 `https://*.vercel.app/auth/callback` 추가
 
-`successUrl` / `failUrl` 은 런타임에 `NEXT_PUBLIC_SITE_URL` → `VERCEL_URL` → `localhost` 순으로 파생하므로
+`successUrl` / `failUrl` 은 런타임에 `SITE_URL` → `VERCEL_URL` → `localhost` 순으로 파생하므로
 프리뷰 배포에서도 절대 URL이 깨지지 않습니다.
 
 ---

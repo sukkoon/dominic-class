@@ -7,11 +7,17 @@ type TossPaymentsInstance = Awaited<ReturnType<typeof loadTossPayments>>;
 type Widgets = ReturnType<TossPaymentsInstance["widgets"]>;
 
 export default function TossWidget({
+  clientKey,
   amount,
   customerKey,
   customerEmail,
   customerName,
 }: {
+  /**
+   * 토스 클라이언트 키. 서버 컴포넌트에서 props로 내려받는다.
+   * 환경변수를 NEXT_PUBLIC_ 없이 등록했기 때문에 브라우저 번들에서는 직접 읽을 수 없다.
+   */
+  clientKey: string;
   amount: number;
   customerKey: string;
   customerEmail: string;
@@ -25,10 +31,9 @@ export default function TossWidget({
 
   useEffect(() => {
     let cancelled = false;
-    const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY;
 
     if (!clientKey) {
-      setError("NEXT_PUBLIC_TOSS_CLIENT_KEY 환경변수가 없습니다.");
+      setError("TOSS_CLIENT_KEY 환경변수가 없습니다. Vercel 환경변수를 확인해 주세요.");
       return;
     }
 
@@ -44,7 +49,7 @@ export default function TossWidget({
     return () => {
       cancelled = true;
     };
-  }, [customerKey]);
+  }, [clientKey, customerKey]);
 
   useEffect(() => {
     if (!widgets || renderedRef.current) return;

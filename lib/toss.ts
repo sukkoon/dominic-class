@@ -1,6 +1,8 @@
 import "server-only";
 
-export { siteUrl } from "@/lib/site";
+import { tossSecretKey } from "@/lib/env";
+
+export { siteUrl } from "@/lib/env";
 
 const CONFIRM_URL = "https://api.tosspayments.com/v1/payments/confirm";
 
@@ -25,8 +27,12 @@ export type TossConfirmResult =
  * 비밀번호가 없다는 것을 알리기 위해 키 뒤에 콜론을 붙여 인코딩한다.
  */
 function authHeader(): string {
-  const secret = process.env.TOSS_SECRET_KEY;
-  if (!secret) throw new Error("TOSS_SECRET_KEY 환경변수가 없습니다.");
+  const secret = tossSecretKey();
+  if (!secret) {
+    throw new Error(
+      "TOSS_SECRET_KEY 환경변수가 없습니다. Vercel Settings → Environment Variables 에 추가하세요.",
+    );
+  }
   return "Basic " + Buffer.from(secret + ":").toString("base64");
 }
 

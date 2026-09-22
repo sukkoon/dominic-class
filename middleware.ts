@@ -4,36 +4,25 @@ import { NextResponse, type NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  // Vercel에 NEXT_PUBLIC_ 접두사 없이 등록된 이름을 먼저 본다.
+  // Edge 런타임에서 치환되려면 정적 프로퍼티 접근이어야 해서 여기서는 lib/env 를 쓰지 않는다.
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const anonKey = process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-  // 환경변수가 없으면 세션 갱신만 건너뛴다.
-  // 여기서 던지면 미들웨어가 모든 경로에 걸려 있어 사이트 전체가 500(MIDDLEWARE_INVOCATION_FAILED)이 된다.
-  if (!url || !anonKey) {
-    console.warn(
-      "[middleware] NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY 가 없어 세션 갱신을 건너뜁니다.",
-    );
-    return response;
-  }
-
-  const supabase = createServerClient(
-    url,
-    anonKey,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-          response = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options),
-          );
-        },
+  const supabase = createServerClient(url, anonKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+        response = NextResponse.next({ request });
+        cookiesToSet.forEach(({ name, value, options }) =>
+          response.cookies.set(name, value, options),
+        );
       },
     },
-  );
+  });
 
   // 세션 쿠키 갱신. 이 호출이 없으면 서버 컴포넌트에서 로그인 상태가 끊긴다.
   await supabase.auth.getUser();
