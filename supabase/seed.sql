@@ -404,3 +404,85 @@ update public.dc_languages set
   hero_image_url = 'https://images.unsplash.com/photo-1608037521277-154cd1b89191?auto=format&fit=crop&w=1920&q=75',
   hero_image_alt = '산등성이를 따라 이어지는 중국 만리장성'
  where code = 'zh';
+
+-- ── 브라우저 음성 합성 언어 코드 ──
+update public.dc_languages set speech_lang = 'en-US' where code = 'en';
+update public.dc_languages set speech_lang = 'ja-JP' where code = 'ja';
+update public.dc_languages set speech_lang = 'es-ES' where code = 'es';
+update public.dc_languages set speech_lang = 'zh-CN' where code = 'zh';
+
+-- ── 15초 샘플 강의 스크립트 ──
+-- 문장은 (언어 x 레벨)로, 머리말은 유형으로 정한다.
+with sample(language_code, level_code, native, ko) as (values
+ ('en','beginner',
+  array['Hello! My name is Jiwoo.','I live in Seoul and I work at a bank.','Nice to meet you. See you next class!'],
+  array['안녕하세요, 제 이름은 지우입니다.','저는 서울에 살고 은행에서 일합니다.','만나서 반갑습니다. 다음 수업에서 봬요!']),
+ ('en','intermediate',
+  array['I have been learning English for about two years.','What I like most is talking with people from other countries.','Could you say that again a little more slowly?'],
+  array['영어를 배운 지 2년쯤 됐습니다.','제가 가장 좋아하는 건 다른 나라 사람들과 이야기하는 거예요.','조금만 더 천천히 말씀해 주시겠어요?']),
+ ('en','advanced',
+  array['I see your point, but I would argue the opposite.','The data suggests a different conclusion altogether.','Let me walk you through my reasoning step by step.'],
+  array['무슨 말씀인지 알겠습니다만, 저는 반대로 봅니다.','자료는 전혀 다른 결론을 가리킵니다.','제 논리를 하나씩 짚어 드리겠습니다.']),
+ ('ja','beginner',
+  array['はじめまして。キムと申します。','ソウルに住んでいます。','コーヒーを一つください。'],
+  array['처음 뵙겠습니다. 김이라고 합니다.','서울에 살고 있습니다.','커피 하나 주세요.']),
+ ('ja','intermediate',
+  array['週末は友だちと映画を見に行きました。','この資料、明日までにお願いできますか。','すみません、もう一度お願いします。'],
+  array['주말에 친구와 영화를 보러 갔습니다.','이 자료, 내일까지 부탁드려도 될까요?','죄송한데 한 번 더 부탁드립니다.']),
+ ('ja','advanced',
+  array['恐れ入りますが、少々お時間をいただけますでしょうか。','その件につきましては、社内で検討させていただきます。','ご指摘のとおりかと存じます。'],
+  array['죄송합니다만, 잠시 시간을 내주실 수 있을까요?','그 건에 대해서는 사내에서 검토하겠습니다.','지적하신 대로라고 생각합니다.']),
+ ('es','beginner',
+  array['¡Hola! Me llamo Minji.','Soy de Corea y vivo en Seúl.','Un café con leche, por favor.'],
+  array['안녕하세요! 제 이름은 민지예요.','저는 한국 사람이고 서울에 삽니다.','카페라테 한 잔 주세요.']),
+ ('es','intermediate',
+  array['El fin de semana pasado fui a la playa con mi familia.','Me gustaría reservar una mesa para dos.','¿Podrías repetirlo más despacio, por favor?'],
+  array['지난 주말에 가족과 바다에 갔어요.','두 명 자리를 예약하고 싶습니다.','조금 더 천천히 다시 말해 주시겠어요?']),
+ ('es','advanced',
+  array['Si hubiera sabido eso antes, habría tomado otra decisión.','No estoy del todo de acuerdo con ese planteamiento.','Permítame explicarle mi punto de vista.'],
+  array['그걸 미리 알았다면 다른 결정을 했을 겁니다.','그 견해에는 전적으로 동의하지 않습니다.','제 관점을 설명드리겠습니다.']),
+ ('zh','beginner',
+  array['你好！我叫民秀。','我是韩国人，住在首尔。','请给我一杯咖啡。'],
+  array['안녕하세요! 저는 민수라고 합니다.','저는 한국 사람이고 서울에 삽니다.','커피 한 잔 주세요.']),
+ ('zh','intermediate',
+  array['上个周末我和朋友去看电影了。','这份资料明天之前可以吗？','不好意思，请您再说一遍。'],
+  array['지난 주말에 친구와 영화를 보러 갔어요.','이 자료 내일까지 가능할까요?','죄송한데 한 번 더 말씀해 주세요.']),
+ ('zh','advanced',
+  array['关于这个问题，我们需要从长远来考虑。','恕我直言，我持不同意见。','请允许我解释一下我的看法。'],
+  array['이 문제는 장기적으로 봐야 합니다.','솔직히 말씀드리면 저는 생각이 다릅니다.','제 견해를 설명드리겠습니다.'])
+)
+insert into public.dc_course_samples (course_id, headline_ko, script_native, script_ko)
+select c.id,
+       case c.class_type_code
+         when 'grammar'      then '오늘 배울 문장을 먼저 들어보세요'
+         when 'conversation' then '수업에서 바로 쓰는 문장 3개'
+         else 'OPIc 답변에 그대로 쓰는 문장 3개'
+       end,
+       s.native, s.ko
+  from public.dc_courses c
+  join sample s on s.language_code = c.language_code and s.level_code = c.level_code
+on conflict (course_id) do nothing;
+
+-- ── 데모 강의 평가 ──
+-- user_id 가 null 이라 소유자 정책상 아무도 수정/삭제할 수 없다.
+with tpl(class_type_code, seq, rating, title, body) as (values
+ ('grammar',1,5,'설명이 군더더기가 없어요','규칙을 외우라고 하지 않고 왜 그렇게 되는지부터 잡아 줍니다. 예문 20개를 직접 분석하다 보니 세 번째 주부터는 문장이 알아서 만들어졌어요.'),
+ ('grammar',2,4,'숙제가 딱 적당합니다','매 차시 필수 하나, 심화 하나라 부담이 없습니다. 틀린 문제를 문장으로 다시 쓰게 하는 게 확실히 남더라고요.'),
+ ('grammar',3,5,'어순 감각이 생깁니다','말할 때마다 어순이 꼬였는데 지금은 먼저 뼈대를 잡고 시작하게 됐습니다. 즉석 작문 시간이 제일 도움됐어요.'),
+ ('conversation',1,5,'드디어 입이 트였습니다','첫 시간부터 계속 말을 시킵니다. 틀려도 그냥 넘어가지 않고 바로 고쳐 주셔서 같은 실수를 반복하지 않게 됩니다.'),
+ ('conversation',2,4,'상황극이 실전 같아요','교재 문장이 아니라 실제로 쓸 법한 말만 다룹니다. 1분 녹음 숙제가 처음엔 부담이었는데 지금은 제일 기다려집니다.'),
+ ('conversation',3,5,'수업 절반이 제 말하기 시간','선생님이 말하는 시간보다 제가 말하는 시간이 깁니다. 그게 이 수업의 전부라고 생각해요.'),
+ ('exam',1,5,'등급이 두 단계 올랐습니다','배경설문부터 다시 짰습니다. 외울 문장을 최소로 줄이고 구조만 잡으니 돌발 질문에서도 안 막히더라고요.'),
+ ('exam',2,4,'롤플레이가 확실히 잡힙니다','11~13번에서 늘 무너졌는데 유형별 대응 틀을 몸에 붙이니 시험장에서 당황하지 않았습니다.'),
+ ('exam',3,5,'타이머 연습이 결정적','실전처럼 준비 시간 없이 답하는 훈련을 반복합니다. 실제 시험이 오히려 편하게 느껴졌어요.')
+), names(seq, nm) as (values
+ (1,'김민준'),(2,'이서연'),(3,'박지호'),(4,'최예린'),(5,'정우진'),(6,'강수아'),
+ (7,'윤도현'),(8,'한지민'),(9,'오세훈'),(10,'신유나'),(11,'배준서'),(12,'류하은')
+)
+insert into public.dc_course_reviews
+  (course_id, user_id, author_name, rating, title, body, is_seed, created_at)
+select c.id, null, n.nm, t.rating, t.title, t.body, true,
+       now() - make_interval(days => (row_number() over (order by c.sort_order, c.slug, t.seq))::int)
+  from public.dc_courses c
+  join tpl t on t.class_type_code = c.class_type_code
+  join names n on n.seq = ((abs(hashtext(c.slug)) + t.seq * 5) % 12) + 1;

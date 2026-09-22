@@ -55,8 +55,6 @@ export default async function HomePage() {
         </div>
 
         <div className="mx-auto max-w-6xl px-4 py-20 sm:py-28">
-          <p className="chip chip-accent mb-5">20~40대를 위한 외국어 클래스</p>
-
           <h1 className="display max-w-3xl text-4xl leading-[1.15] sm:text-6xl">
             퇴근하고 <em className="hero-accent">한 시간</em>,
             <br />

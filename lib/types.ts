@@ -27,6 +27,8 @@ export type Language = {
   /** 언어 히어로 배경에 쓰는 랜드마크 실사 사진 (Unsplash) */
   hero_image_url: string;
   hero_image_alt: string;
+  /** 브라우저 음성 합성용 BCP-47 코드 (en-US, ja-JP …) */
+  speech_lang: string;
   sort_order: number;
 };
 
@@ -113,8 +115,42 @@ export type Course = {
   outcomes: string[];
   /** 중점적으로 다루는 주제 4가지 */
   focus_ko: string[];
+  /** 좋아요 수 (트리거로 유지) */
+  like_count: number;
+  /** 평가 수와 평점 합계 (평균 = rating_sum / review_count) */
+  review_count: number;
+  rating_sum: number;
   sort_order: number;
 };
+
+export type CourseSample = {
+  id: string;
+  course_id: string;
+  headline_ko: string;
+  script_native: string[];
+  script_ko: string[];
+  /** 실제 녹음/영상 파일이 있으면 이걸 재생하고, 없으면 브라우저 음성으로 읽는다 */
+  media_url: string | null;
+  duration_seconds: number;
+};
+
+export type CourseReview = {
+  id: string;
+  course_id: string;
+  user_id: string | null;
+  author_name: string;
+  rating: number;
+  title: string;
+  body: string;
+  is_seed: boolean;
+  created_at: string;
+};
+
+/** 평점 평균을 소수 한 자리로 */
+export function ratingAvg(course: Pick<Course, "review_count" | "rating_sum">): number {
+  if (!course.review_count) return 0;
+  return Math.round((course.rating_sum / course.review_count) * 10) / 10;
+}
 
 export type Lesson = {
   id: string;

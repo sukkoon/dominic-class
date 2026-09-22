@@ -51,6 +51,12 @@ export default async function SiteHeader() {
           >
             강사진
           </Link>
+          <Link
+            href="/reviews"
+            className="rounded-full px-3 py-1.5 text-sm font-medium text-[var(--muted)] transition hover:text-[var(--fg)]"
+          >
+            강의 평가
+          </Link>
         </nav>
 
         <div className="ml-auto flex shrink-0 items-center gap-2">

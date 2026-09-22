@@ -597,3 +597,54 @@ input:focus, select:focus, textarea:focus {
       color-mix(in srgb, #000 28%, transparent) 100%
     );
 }
+
+/* ============================================================
+   추천(좋아요) 버튼 · 별점
+   ============================================================ */
+.like-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--fg);
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+}
+.like-btn:hover {
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+.like-btn:active {
+  transform: translateY(1px);
+}
+.like-btn.is-on {
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  color: color-mix(in srgb, var(--accent) 85%, #000);
+}
+.like-btn--sm {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.75rem;
+}
+
+.star-rating {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.star-rating__off {
+  color: color-mix(in srgb, var(--fg) 20%, transparent);
+}
+.star-rating__on {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  color: #f0a516;
+}

@@ -1,7 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getCatalog } from "@/lib/queries";
+import { ratingAvg } from "@/lib/types";
 import InstructorAvatar from "@/components/instructor-avatar";
+import StarRating from "@/components/star-rating";
 
 export const metadata: Metadata = {
   title: "강사진",
@@ -103,9 +105,12 @@ export default async function InstructorsPage() {
                           <span className="chip chip-type">
                             {classType.icon_emoji} {classType.name_ko}
                           </span>
-                          <p className="display mt-1.5 truncate text-lg font-bold">
+                          <Link
+                            href={"/instructors/" + instructor!.id}
+                            className="display mt-1.5 block truncate text-lg font-bold underline-offset-2 hover:underline"
+                          >
                             {instructor!.name_ko}
-                          </p>
+                          </Link>
                           {instructor!.name_native ? (
                             <p className="display-native truncate text-xs text-[var(--muted)]">
                               {instructor!.name_native}
@@ -139,13 +144,29 @@ export default async function InstructorsPage() {
                         </ul>
                       </div>
 
-                      {course ? (
+                      <div className="mt-4 flex flex-wrap gap-2">
                         <Link
-                          href={"/courses/" + course.slug}
-                          className="btn btn-ghost mt-4 w-full !text-sm"
+                          href={"/instructors/" + instructor!.id}
+                          className="btn btn-primary flex-1 !text-sm"
                         >
-                          {classType.name_ko} 클래스 보기
+                          상세 · 평가
                         </Link>
+                        {course ? (
+                          <Link
+                            href={"/courses/" + course.slug}
+                            className="btn btn-ghost flex-1 !text-sm"
+                          >
+                            클래스 보기
+                          </Link>
+                        ) : null}
+                      </div>
+
+                      {course && course.review_count > 0 ? (
+                        <p className="mt-2.5 flex items-center gap-1.5 text-xs text-[var(--muted)]">
+                          <StarRating value={ratingAvg(course)} />
+                          {ratingAvg(course).toFixed(1)} · 평가 {course.review_count}개 · ♥{" "}
+                          {course.like_count}
+                        </p>
                       ) : null}
                     </article>
                   ))}

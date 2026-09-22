@@ -4,6 +4,8 @@ import type {
   ClassTypeCode,
   Course,
   CourseFull,
+  CourseReview,
+  CourseSample,
   Instructor,
   Language,
   LanguageCode,
@@ -85,7 +87,29 @@ export async function getCatalog(): Promise<Catalog> {
 export type CourseDetail = {
   course: CourseFull;
   lessons: (Lesson & { homework: LessonHomework[] })[];
+  sample: CourseSample | null;
+  reviews: CourseReview[];
 };
+
+/** 한 강의의 평가 목록 (최신순) */
+export async function getCourseReviews(courseId: string): Promise<CourseReview[]> {
+  const { data } = await sb
+    .from("dc_course_reviews")
+    .select("*")
+    .eq("course_id", courseId)
+    .order("created_at", { ascending: false });
+  return (data ?? []) as CourseReview[];
+}
+
+/** 전체 평가 게시판용. 최신순으로 한 번에 가져온다 */
+export async function listAllReviews(limit = 200): Promise<CourseReview[]> {
+  const { data } = await sb
+    .from("dc_course_reviews")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  return (data ?? []) as CourseReview[];
+}
 
 export async function getCourseDetail(slug: string): Promise<CourseDetail | null> {
   const catalog = await getCatalog();
@@ -113,9 +137,16 @@ export async function getCourseDetail(slug: string): Promise<CourseDetail | null
     byLesson.set(h.lesson_id, arr);
   }
 
+  const [{ data: sampleRow }, reviews] = await Promise.all([
+    sb.from("dc_course_samples").select("*").eq("course_id", course.id).maybeSingle(),
+    getCourseReviews(course.id),
+  ]);
+
   return {
     course,
     lessons: lessons.map((l) => ({ ...l, homework: byLesson.get(l.id) ?? [] })),
+    sample: (sampleRow as CourseSample | null) ?? null,
+    reviews,
   };
 }
 

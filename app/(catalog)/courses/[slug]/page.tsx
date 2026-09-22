@@ -10,6 +10,12 @@ import CurriculumList from "@/components/curriculum-list";
 import CourseCard from "@/components/course-card";
 import LevelBadge from "@/components/level-badge";
 import WeekSchedule from "@/components/week-schedule";
+import LikeButton from "@/components/like-button";
+import SamplePlayer from "@/components/sample-player";
+import ReviewSection from "@/components/review-section";
+import StarRating from "@/components/star-rating";
+import { createClient } from "@/lib/supabase/server";
+import { ratingAvg } from "@/lib/types";
 
 export async function generateStaticParams() {
   const { courses } = await getCatalog();
@@ -40,9 +46,27 @@ export default async function CourseDetailPage({
   const detail = await getCourseDetail(slug);
   if (!detail) notFound();
 
-  const { course, lessons } = detail;
+  const { course, lessons, sample, reviews } = detail;
   const { courses } = await getCatalog();
   const months = startMonthOptions();
+  const avg = ratingAvg(course);
+
+  // 로그인 사용자의 추천 여부는 쿠키 바인딩 클라이언트로 확인한다 (RLS 적용)
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let liked = false;
+  if (user) {
+    const { data: likeRow } = await supabase
+      .from("dc_course_likes")
+      .select("id")
+      .eq("course_id", course.id)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    liked = Boolean(likeRow);
+  }
 
   const related = courses.filter(
     (c) => c.language_code === course.language_code && c.id !== course.id,
@@ -78,6 +102,19 @@ export default async function CourseDetailPage({
 
           <h1 className="display text-4xl font-bold sm:text-5xl">{course.title_ko}</h1>
           <p className="mt-3 max-w-2xl text-lg opacity-90">{course.subtitle_ko}</p>
+
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <a href="#reviews" className="chip chip-on-brand !px-3 !py-1.5">
+              <StarRating value={avg} />
+              {avg > 0 ? avg.toFixed(1) : "-"} · 평가 {course.review_count}개
+            </a>
+            <LikeButton
+              courseId={course.id}
+              slug={course.slug}
+              liked={liked}
+              count={course.like_count}
+            />
+          </div>
 
           <div className="mt-6 flex flex-wrap gap-2">
             {course.highlights.map((h) => (
@@ -141,6 +178,23 @@ export default async function CourseDetailPage({
             </p>
           </section>
 
+          {/* 15초 맛보기 */}
+          {sample ? (
+            <section className="card mt-6 p-6">
+              <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+                <h2 className="display text-xl">15초 샘플 강의</h2>
+                <p className="text-sm text-[var(--muted)]">
+                  수업에서 실제로 다루는 문장입니다
+                </p>
+              </div>
+              <SamplePlayer
+                sample={sample}
+                speechLang={course.language.speech_lang}
+                languageName={course.language.name_ko}
+              />
+            </section>
+          ) : null}
+
           <section className="card mt-6 overflow-hidden">
             <div className="themed flex items-center gap-4 px-6 py-5">
               <InstructorAvatar
@@ -185,7 +239,7 @@ export default async function CourseDetailPage({
                 <div>
                   <dt className="text-xs font-bold text-[var(--muted)]">강의 경력</dt>
                   <dd className="mt-1">
-                    <ul className="space-y-1">
+                    <ul className="space-y-1" data-role="career">
                       {course.instructor.career_ko.map((c) => (
                         <li key={c} className="flex gap-2">
                           <span className="shrink-0 text-[var(--muted)]">·</span>
@@ -196,6 +250,13 @@ export default async function CourseDetailPage({
                   </dd>
                 </div>
               </dl>
+
+              <Link
+                href={"/instructors/" + course.instructor_id}
+                className="btn btn-ghost mt-5 w-full !text-sm"
+              >
+                {course.instructor.name_ko} 강사 상세정보 · 평가 보기
+              </Link>
             </div>
           </section>
 
@@ -210,6 +271,14 @@ export default async function CourseDetailPage({
               <CurriculumList lessons={lessons} />
             </div>
           </section>
+
+          <ReviewSection
+            courseId={course.id}
+            slug={course.slug}
+            reviews={reviews}
+            currentUserId={user?.id ?? null}
+            avg={avg}
+          />
         </div>
 
         {/* 신청 사이드바 */}

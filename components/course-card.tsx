@@ -1,8 +1,10 @@
 import Link from "next/link";
 import type { CourseFull } from "@/lib/types";
+import { ratingAvg } from "@/lib/types";
 import { formatKrw } from "@/lib/format";
 import InstructorAvatar from "./instructor-avatar";
 import LevelBadge from "./level-badge";
+import StarRating from "./star-rating";
 
 /**
  * variant
@@ -101,6 +103,15 @@ export default function CourseCard({
             <span className="chip">월 12차시</span>
           </div>
         )}
+
+        {course.review_count > 0 ? (
+          <p className="flex flex-wrap items-center gap-1.5 text-xs text-[var(--muted)]">
+            <StarRating value={ratingAvg(course)} />
+            <span className="font-bold text-[var(--fg)]">{ratingAvg(course).toFixed(1)}</span>
+            평가 {course.review_count}
+            <span aria-hidden="true">·</span>♥ {course.like_count}
+          </p>
+        ) : null}
 
         <div className="mt-auto flex items-end justify-between border-t border-[var(--border)] pt-3">
           <div className="text-xs leading-relaxed text-[var(--muted)]">

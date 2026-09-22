@@ -552,3 +552,114 @@ create policy dc_hw_owner on public.dc_homework_completions
     select 1 from public.dc_enrollments e where e.id = enrollment_id and e.user_id = (select auth.uid())))
   with check (exists (
     select 1 from public.dc_enrollments e where e.id = enrollment_id and e.user_id = (select auth.uid())));
+
+-- ─────────────────────────── 8. 추천 · 강의 평가 · 샘플 강의 ───────────────────────────
+
+-- 브라우저 음성 합성에 쓸 BCP-47 언어 코드
+alter table public.dc_languages add column speech_lang text not null default '';
+
+-- 목록에서 매번 집계하지 않도록 강의에 카운터를 둔다 (아래 트리거로 유지)
+alter table public.dc_courses
+  add column like_count   integer not null default 0,
+  add column review_count integer not null default 0,
+  add column rating_sum   integer not null default 0;
+comment on column public.dc_courses.rating_sum is '평점 합계. 평균은 rating_sum / review_count 로 계산';
+
+-- 좋아요(추천)
+create table public.dc_course_likes (
+  id         uuid primary key default gen_random_uuid(),
+  course_id  uuid not null references public.dc_courses(id) on delete cascade,
+  user_id    uuid not null references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  unique (course_id, user_id)
+);
+create index dc_course_likes_user_idx   on public.dc_course_likes (user_id);
+create index dc_course_likes_course_idx on public.dc_course_likes (course_id);
+
+-- 강의 평가.
+-- 시드 후기는 user_id 가 null 이라 소유자 정책에 걸리지 않아 아무도 수정/삭제할 수 없다.
+create table public.dc_course_reviews (
+  id          uuid primary key default gen_random_uuid(),
+  course_id   uuid not null references public.dc_courses(id) on delete cascade,
+  user_id     uuid references auth.users(id) on delete cascade,
+  author_name text not null default '수강생',
+  rating      smallint not null check (rating between 1 and 5),
+  title       text not null default '',
+  body        text not null default '',
+  is_seed     boolean not null default false,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now(),
+  unique (course_id, user_id)          -- 한 사람이 같은 강의에 하나만
+);
+create index dc_course_reviews_course_idx on public.dc_course_reviews (course_id, created_at desc);
+create index dc_course_reviews_user_idx   on public.dc_course_reviews (user_id);
+
+-- 15초 샘플 강의.
+-- media_url 에 녹음/영상 파일이 있으면 그것을 재생하고, 비어 있으면
+-- 브라우저 음성 합성(Web Speech API)으로 script_native 를 읽어 준다.
+create table public.dc_course_samples (
+  id               uuid primary key default gen_random_uuid(),
+  course_id        uuid not null unique references public.dc_courses(id) on delete cascade,
+  headline_ko      text not null default '',
+  script_native    text[] not null default '{}',
+  script_ko        text[] not null default '{}',
+  media_url        text,
+  duration_seconds smallint not null default 15
+);
+comment on table public.dc_course_samples is '15초 맛보기. media_url 이 비어 있으면 Web Speech API 로 읽어 준다';
+
+-- 카운터 트리거
+create or replace function public.dc_sync_course_like_count()
+returns trigger language plpgsql security definer set search_path = public, pg_temp as $$
+declare v_course uuid := coalesce(new.course_id, old.course_id);
+begin
+  update public.dc_courses c
+     set like_count = (select count(*) from public.dc_course_likes l where l.course_id = c.id)
+   where c.id = v_course;
+  return null;
+end $$;
+
+create trigger dc_course_like_counter
+  after insert or delete on public.dc_course_likes
+  for each row execute function public.dc_sync_course_like_count();
+
+create or replace function public.dc_sync_course_review_stats()
+returns trigger language plpgsql security definer set search_path = public, pg_temp as $$
+declare v_course uuid := coalesce(new.course_id, old.course_id);
+begin
+  update public.dc_courses c
+     set review_count = (select count(*)                from public.dc_course_reviews r where r.course_id = c.id),
+         rating_sum   = (select coalesce(sum(rating),0) from public.dc_course_reviews r where r.course_id = c.id)
+   where c.id = v_course;
+  return null;
+end $$;
+
+create trigger dc_course_review_counter
+  after insert or update or delete on public.dc_course_reviews
+  for each row execute function public.dc_sync_course_review_stats();
+
+-- RLS
+alter table public.dc_course_likes   enable row level security;
+alter table public.dc_course_reviews enable row level security;
+alter table public.dc_course_samples enable row level security;
+
+-- 좋아요: 본인 것만 보고 본인 것만 누른다 (총 개수는 dc_courses.like_count 로 공개)
+create policy dc_like_owner on public.dc_course_likes
+  for all to authenticated
+  using (user_id = (select auth.uid()))
+  with check (user_id = (select auth.uid()));
+
+-- 평가: 누구나 읽고, 로그인 사용자는 자기 글만 쓰고 고치고 지운다
+create policy dc_review_public_read on public.dc_course_reviews
+  for select to anon, authenticated using (true);
+create policy dc_review_owner_ins on public.dc_course_reviews
+  for insert to authenticated with check (user_id = (select auth.uid()));
+create policy dc_review_owner_upd on public.dc_course_reviews
+  for update to authenticated
+  using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
+create policy dc_review_owner_del on public.dc_course_reviews
+  for delete to authenticated using (user_id = (select auth.uid()));
+
+-- 샘플: 공개 읽기
+create policy dc_sample_public_read on public.dc_course_samples
+  for select to anon, authenticated using (true);
