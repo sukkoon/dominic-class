@@ -272,3 +272,105 @@ select l.id, 2::smallint,
        false
   from public.dc_lessons l join public.dc_courses c on c.id = l.course_id
 on conflict (lesson_id, seq) do nothing;
+
+-- ── 강의 개요 (목표 / 수료 후 성취 / 중점 내용) ──
+-- 목표와 성취는 (레벨 x 유형) 9조합 템플릿에서, 중점 내용은 실제 차시 주제에서 뽑는다.
+with tpl(level_code, class_type_code, goal, outcomes) as (values
+ ('beginner','grammar',
+  '{lang} 문장을 스스로 만들어 낼 수 있는 최소한의 문법 골격을 한 달 안에 갖춥니다.',
+  array['기본 어순으로 현재·과거·미래 문장을 만든다','의문문과 부정문을 자유롭게 전환한다','초급 필수 어휘로 짧은 글을 쓴다']),
+ ('beginner','conversation',
+  '준비 없이 첫 마디를 꺼내고, {lang}만으로 일상 상황을 혼자 해결합니다.',
+  array['자기소개를 30초 동안 막힘없이 한다','카페·식당·교통 상황을 혼자 해결한다','상대의 질문을 알아듣고 되묻는다']),
+ ('beginner','exam',
+  'OPIc IM 등급을 목표로 시험의 구조와 답변 틀을 처음부터 익힙니다.',
+  array['배경설문을 나에게 유리하게 설계한다','자기소개·묘사 문항을 템플릿으로 답한다','모의고사 1회를 끝까지 완주한다']),
+ ('intermediate','grammar',
+  '문장을 길게 잇고, 시제와 구문을 상황에 맞게 정확히 골라 씁니다.',
+  array['관계절과 접속사로 두 문장을 하나로 잇는다','시제를 상황에 맞게 구분해 쓴다','자주 틀리는 문법을 스스로 교정한다']),
+ ('intermediate','conversation',
+  '주제가 주어지면 근거를 붙여 2~3분간 이어서 말할 수 있게 만듭니다.',
+  array['한 주제로 2~3분 이어서 말한다','의견에 이유와 예시를 붙인다','전화와 이메일로 업무 대화를 한다']),
+ ('intermediate','exam',
+  'OPIc IH 등급을 목표로 롤플레이와 돌발 질문을 유형별로 공략합니다.',
+  array['롤플레이 11~13번을 유형별로 대응한다','과거 경험을 3단 구성으로 말한다','돌발 질문에서 말이 끊기지 않는다']),
+ ('advanced','grammar',
+  '원어민이 실제로 쓰는 문장 구조와 미묘한 뉘앙스 차이를 다룹니다.',
+  array['가정법과 도치로 뉘앙스를 조절한다','격식·비격식 레지스터를 구분해 쓴다','긴 글의 구조를 분석하고 문장을 다듬는다']),
+ ('advanced','conversation',
+  '토론과 발표에서 상대를 설득하는 말하기를 완성합니다.',
+  array['찬반 논증을 구조적으로 펼친다','발표 후 즉석 질문에 대응한다','유머와 완곡 표현으로 분위기를 조절한다']),
+ ('advanced','exam',
+  'OPIc AL 등급을 목표로 답변의 구조와 유창성을 동시에 끌어올립니다.',
+  array['추상적인 주제에 논평을 붙여 말한다','자기 수정을 자연스럽게 섞는다','실전 모의고사 3회로 컨디션을 맞춘다'])
+)
+update public.dc_courses c
+   set goal_ko  = replace(t.goal, '{lang}', lg.name_ko),
+       outcomes = t.outcomes,
+       focus_ko = coalesce((
+         select array_agg(split_part(l.title_ko, '. ', 2) order by l.lesson_no)
+           from public.dc_lessons l
+          where l.course_id = c.id and l.lesson_no in (2,5,8,11)
+       ), '{}'),
+       updated_at = now()
+  from tpl t, public.dc_languages lg
+ where t.level_code = c.level_code
+   and t.class_type_code = c.class_type_code
+   and lg.code = c.language_code;
+
+-- ── 강사 학력 · 경력 ──
+-- 전 소속과 학력은 강사별로, 뒤의 두 줄은 유형과 경력 연차에서 파생한다.
+with cred(language_code, level_code, class_type_code, education, former) as (values
+ ('en','beginner','grammar','서울대학교 영어영문학 학사 · 컬럼비아대학교 TESOL 석사','전 YBM어학원 영어 전임강사'),
+ ('en','beginner','conversation','한국외국어대학교 영어교육 학사 · 미시간주립대학교 TESOL 석사','전 파고다어학원 회화 전임강사'),
+ ('en','beginner','exam','연세대학교 영어영문학 학사 · 오하이오주립대학교 외국어교육 석사','전 해커스어학원 OPIc 전임강사'),
+ ('en','intermediate','grammar','고려대학교 영어영문학 학사 · 워싱턴대학교 언어학 석사','전 시사영어사 중급 문법 전임강사'),
+ ('en','intermediate','conversation','서울대학교 언어학 학사 · 브리티시컬럼비아대학교 응용언어학 석사','전 월스트리트잉글리시 수석 강사'),
+ ('en','intermediate','exam','성균관대학교 영어영문학 학사 · 뉴욕대학교 TESOL 석사','전 해커스 OPIc 연구소 연구원'),
+ ('en','advanced','grammar','University of Chicago 영문학 학사 · Northwestern University 응용언어학 박사','전 연세대학교 한국어학당 영어 강사'),
+ ('en','advanced','conversation','Harvard University 비교문학 학사 · Boston University 수사학 석사','전 주한미국대사관 어학 프로그램 강사'),
+ ('en','advanced','exam','University of Washington 언어학 학사 · Georgetown University 언어평가 석사','전 ACTFL 인증 OPI 공식 평가관'),
+ ('ja','beginner','grammar','서울대학교 일본어학 학사 · 오사카대학 언어문화 석사','전 시원스쿨 일본어 전임강사'),
+ ('ja','beginner','conversation','한국외국어대학교 일본어 학사 · 쓰쿠바대학 일본어교육 석사','전 JLPT 전문학원 회화 전임강사'),
+ ('ja','beginner','exam','고려대학교 일어일문학 학사 · 도쿄외국어대학 일본어교육 석사','전 파고다어학원 일본어 시험반 강사'),
+ ('ja','intermediate','grammar','연세대학교 일어일문학 학사 · 오사카대학 일본어학 박사과정 수료','전 한국외국어대학교 평생교육원 일본어 강사'),
+ ('ja','intermediate','conversation','이화여자대학교 일본어교육 학사 · 교토대학 언어학 석사','전 오사카 한국문화원 한일 통역 강사'),
+ ('ja','intermediate','exam','서강대학교 일본문화학 학사 · 와세다대학 일본어교육 석사','전 해커스 일본어 OPIc 연구원'),
+ ('ja','advanced','grammar','도쿄대학 일본어학 학사 · 도쿄대학 일본어교육 박사','전 도쿄대학 일본어교육센터 강사'),
+ ('ja','advanced','conversation','오사카대학 사회언어학 학사 · 와세다대학 일본어교육 석사','전 주한일본대사관 일본어 강좌 강사'),
+ ('ja','advanced','exam','게이오대학 문학 학사 · 쓰쿠바대학 일본어교육 박사','전 일본국제교류기금 일본어교육 전문원'),
+ ('es','beginner','grammar','한국외국어대학교 스페인어 학사 · 살라망카대학교 스페인어교육 석사','전 한국외국어대학교 FLEX 스페인어 강사'),
+ ('es','beginner','conversation','서울대학교 서어서문학 학사 · 마드리드 콤플루텐세대학교 언어학 석사','전 세르반테스문화원 스페인어 강사'),
+ ('es','beginner','exam','고려대학교 서어서문학 학사 · 바르셀로나대학교 외국어교육 석사','전 시원스쿨 스페인어 시험반 강사'),
+ ('es','intermediate','grammar','연세대학교 서어서문학 학사 · 마드리드 자치대학교 언어학 석사','전 주한스페인대사관 문화원 강사'),
+ ('es','intermediate','conversation','한국외국어대학교 중남미학 학사 · 바르셀로나대학교 스페인어교육 석사','전 바르셀로나 한인문화센터 회화 강사'),
+ ('es','intermediate','exam','부산외국어대학교 스페인어 학사 · 그라나다대학교 응용언어학 석사','전 부산외국어대학교 특강 전임강사'),
+ ('es','advanced','grammar','UNAM 멕시코국립자치대학교 히스패닉문학 학사 · El Colegio de México 언어학 박사','전 El Colegio de México 언어학 연구원'),
+ ('es','advanced','conversation','세비야대학교 히스패닉문헌학 학사 · 살라망카대학교 스페인어교육 박사','전 세비야대학교 외국인 대상 스페인어 강사'),
+ ('es','advanced','exam','마드리드 콤플루텐세대학교 언어학 학사 · 살라망카대학교 언어평가 석사','전 세르반테스문화원 DELE 공식 평가관'),
+ ('zh','beginner','grammar','서울대학교 중어중문학 학사 · 베이징어언대학 대외한어교육 석사','전 차이나로 중국어학원 전임강사'),
+ ('zh','beginner','conversation','한국외국어대학교 중국어 학사 · 베이징어언대학 중국어교육 석사','전 베이징어언대학 한국인반 회화 강사'),
+ ('zh','beginner','exam','고려대학교 중어중문학 학사 · 상하이사범대학 대외한어 석사','전 해커스중국어 HSK·OPIc 강사'),
+ ('zh','intermediate','grammar','연세대학교 중어중문학 학사 · 베이징대학 중국어언학 석사','전 베이징대학 한국 유학생 중국어 강사'),
+ ('zh','intermediate','conversation','이화여자대학교 중어중문학 학사 · 푸단대학 중국어교육 석사','전 상하이 한국문화원 회화 강사'),
+ ('zh','intermediate','exam','성균관대학교 중어중문학 학사 · 베이징사범대학 대외한어교육 석사','전 시원스쿨 중국어 시험반 전임강사'),
+ ('zh','advanced','grammar','베이징대학 중국어언문학 학사 · 베이징대학 언어학 박사','전 베이징대학 대외한어교육학원 강사'),
+ ('zh','advanced','conversation','푸단대학 중국어언문학 학사 · 상하이교통대학 응용언어학 석사','전 주한중국문화원 중국어 강좌 강사'),
+ ('zh','advanced','exam','칭화대학 중국어교육 학사 · 베이징어언대학 언어평가 박사','전 HSK 국제시험 출제위원')
+)
+update public.dc_instructors i
+   set education_ko = cr.education,
+       career_ko = array[
+         cr.former,
+         case i.class_type_code
+           when 'grammar'      then '문법 교재 공동 집필 및 12차시 커리큘럼 설계'
+           when 'conversation' then '기업 임직원 1:1 회화 코칭 200회 이상'
+           else 'OPIc 대비 집중반 누적 20기 이상 운영'
+         end,
+         '강의 경력 ' || i.years_experience || '년 · 누적 수강생 약 ' ||
+           to_char(i.years_experience * 280, 'FM999,999') || '명'
+       ]
+  from cred cr
+ where cr.language_code = i.language_code
+   and cr.level_code = i.level_code
+   and cr.class_type_code = i.class_type_code;

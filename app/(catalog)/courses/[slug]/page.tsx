@@ -97,9 +97,47 @@ export default async function CourseDetailPage({
             </p>
           ) : null}
 
-          <section className="card p-6">
-            <h2 className="display text-xl font-bold">강의 소개</h2>
-            <p className="prose-muted mt-3 text-sm">{course.description_ko}</p>
+          {/* 강의 개요 — 목표 / 수료 후 성취 / 중점 내용 */}
+          <section className="card overflow-hidden">
+            <div className="themed px-6 py-5">
+              <p className="text-xs font-bold uppercase tracking-wider opacity-80">강의 목표</p>
+              <p className="display mt-1.5 text-lg font-bold leading-relaxed sm:text-xl">
+                {course.goal_ko}
+              </p>
+            </div>
+
+            <div className="grid gap-6 p-6 sm:grid-cols-2">
+              <div>
+                <p className="mb-2.5 text-sm font-bold">수료 후 이렇게 됩니다</p>
+                <ul className="space-y-2">
+                  {course.outcomes.map((o) => (
+                    <li key={o} className="flex gap-2 text-sm leading-relaxed">
+                      <span className="mt-0.5 shrink-0 font-bold text-[var(--accent)]">✓</span>
+                      <span>{o}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <p className="mb-2.5 text-sm font-bold">중점적으로 다루는 내용</p>
+                <ul className="space-y-2">
+                  {course.focus_ko.map((f) => (
+                    <li key={f} className="flex gap-2 text-sm leading-relaxed">
+                      <span className="mt-0.5 shrink-0 text-[var(--muted)]">·</span>
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-3 text-xs text-[var(--muted)]">
+                  12차시 커리큘럼 중 대표 주제입니다. 전체는 아래에서 확인하세요.
+                </p>
+              </div>
+            </div>
+
+            <p className="prose-muted border-t border-[var(--border)] px-6 py-5 text-sm">
+              {course.description_ko}
+            </p>
           </section>
 
           <section className="card mt-6 overflow-hidden">
@@ -137,6 +175,26 @@ export default async function CourseDetailPage({
               </div>
               <p className="mt-3 font-semibold">{course.instructor.headline_ko}</p>
               <p className="prose-muted mt-2 text-sm">{course.instructor.bio_ko}</p>
+
+              <dl className="mt-5 space-y-3 border-t border-[var(--border)] pt-5 text-sm">
+                <div>
+                  <dt className="text-xs font-bold text-[var(--muted)]">학력</dt>
+                  <dd className="mt-1">{course.instructor.education_ko}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-bold text-[var(--muted)]">강의 경력</dt>
+                  <dd className="mt-1">
+                    <ul className="space-y-1">
+                      {course.instructor.career_ko.map((c) => (
+                        <li key={c} className="flex gap-2">
+                          <span className="shrink-0 text-[var(--muted)]">·</span>
+                          <span>{c}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
             </div>
           </section>
 

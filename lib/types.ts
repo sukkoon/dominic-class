@@ -62,6 +62,10 @@ export type Instructor = {
   avatar_emoji: string;
   headline_ko: string;
   bio_ko: string;
+  /** 최종 학력 */
+  education_ko: string;
+  /** 주요 강의 경력 3줄 */
+  career_ko: string[];
   years_experience: number;
 };
 
@@ -94,6 +98,12 @@ export type Course = {
   price_krw: number;
   total_lessons: number;
   highlights: string[];
+  /** 한 달 뒤 도달하려는 한 줄 목표 */
+  goal_ko: string;
+  /** 수료 후 할 수 있게 되는 것 3가지 */
+  outcomes: string[];
+  /** 중점적으로 다루는 주제 4가지 */
+  focus_ko: string[];
   sort_order: number;
 };
 

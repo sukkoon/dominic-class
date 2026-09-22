@@ -82,6 +82,8 @@ create table public.dc_instructors (
   avatar_emoji     text not null default '🧑‍🏫',
   headline_ko      text not null default '',
   bio_ko           text not null default '',
+  education_ko     text not null default '',
+  career_ko        text[] not null default '{}',
   years_experience smallint not null default 3,
   created_at       timestamptz not null default now(),
   unique (language_code, level_code, class_type_code),
@@ -99,6 +101,8 @@ create table public.dc_instructors (
   )
 );
 comment on table public.dc_instructors is '초급=한국인, 중급=한국어/외국어 이중언어, 고급=현지 원어민';
+comment on column public.dc_instructors.education_ko is '최종 학력';
+comment on column public.dc_instructors.career_ko is '주요 강의 경력';
 
 -- 강의 36개 = 4언어 x 3레벨 x 3유형
 create table public.dc_courses (
@@ -114,6 +118,9 @@ create table public.dc_courses (
   price_krw       integer not null check (price_krw > 0),
   total_lessons   smallint not null default 12 check (total_lessons = 12),
   highlights      text[] not null default '{}',
+  goal_ko         text not null default '',
+  outcomes        text[] not null default '{}',
+  focus_ko        text[] not null default '{}',
   is_active       boolean not null default true,
   sort_order      smallint not null default 0,
   created_at      timestamptz not null default now(),

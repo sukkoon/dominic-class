@@ -121,6 +121,20 @@ export default async function InstructorsPage() {
                       <p className="mt-3 text-sm font-semibold">{instructor!.headline_ko}</p>
                       <p className="prose-muted mt-1.5 text-sm">{instructor!.bio_ko}</p>
 
+                      <div className="mt-4 rounded-lg bg-[var(--surface-2)] p-3.5 text-xs">
+                        <p className="font-bold text-[var(--muted)]">학력</p>
+                        <p className="mt-1 leading-relaxed">{instructor!.education_ko}</p>
+                        <p className="mt-2.5 font-bold text-[var(--muted)]">강의 경력</p>
+                        <ul className="mt-1 space-y-0.5">
+                          {instructor!.career_ko.map((c) => (
+                            <li key={c} className="flex gap-1.5 leading-relaxed">
+                              <span className="shrink-0 text-[var(--muted)]">·</span>
+                              <span>{c}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
                       {course ? (
                         <Link
                           href={"/courses/" + course.slug}

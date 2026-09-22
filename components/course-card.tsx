@@ -80,7 +80,7 @@ export default function CourseCard({
         </div>
 
         {compact ? (
-          <p className="prose-muted line-clamp-2 text-xs">{course.instructor.headline_ko}</p>
+          <p className="prose-muted line-clamp-2 text-xs">{course.goal_ko}</p>
         ) : (
           <div className="flex flex-wrap gap-1.5">
             <LevelBadge level={course.level} />
