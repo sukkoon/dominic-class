@@ -1,0 +1,210 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Dominic Class — 전역 디자인 토큰
+   타겟 20~40대: 모던·고대비 타이포 + 언어별 이국적 테마 레이어
+   ============================================================ */
+
+:root {
+  --bg: #faf9f7;
+  --surface: #ffffff;
+  --surface-2: #f4f2ef;
+  --fg: #16181d;
+  --muted: #6f6b66;
+  --border: #e5e1db;
+
+  /* 기본(브랜드) 테마 — 언어 페이지에서 [data-lang]이 덮어쓴다 */
+  --brand: #16181d;
+  --accent: #e2574c;
+  --ink: #faf9f7;
+  --on-brand: #ffffff;
+  --display: "Oswald", "Pretendard Variable", sans-serif;
+  --pattern: none;
+  --pattern-size: 48px 48px;
+
+  --radius: 14px;
+  --shadow-sm: 0 1px 2px rgb(22 24 29 / 0.06), 0 1px 3px rgb(22 24 29 / 0.05);
+  --shadow-md: 0 4px 12px rgb(22 24 29 / 0.08), 0 2px 4px rgb(22 24 29 / 0.04);
+  --shadow-lg: 0 18px 40px rgb(22 24 29 / 0.12);
+}
+
+/* ----- 🇺🇸 영어 : 뉴욕 브루클린 · 바시티 ----- */
+[data-lang="en"] {
+  --brand: #0a2342;
+  --accent: #d62828;
+  --ink: #fdf6e3;
+  --on-brand: #fdf6e3;
+  --display: "Oswald", "Pretendard Variable", sans-serif;
+  --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath fill='%23ffffff' d='M24 5l3.2 6.5 7.2 1-5.2 5.1 1.2 7.1L24 21.3l-6.4 3.4 1.2-7.1-5.2-5.1 7.2-1z'/%3E%3Cg stroke='%23ffffff' stroke-width='3' opacity='.55'%3E%3Cpath d='M0 34h48M0 41h48'/%3E%3C/g%3E%3C/svg%3E");
+  --pattern-size: 48px 48px;
+}
+
+/* ----- 🇯🇵 일본어 : 교토 · 세이가이하(靑海波) ----- */
+[data-lang="ja"] {
+  --brand: #1b3b6f;
+  --accent: #e03c31;
+  --ink: #fbf7f0;
+  --on-brand: #fbf7f0;
+  --display: "Noto Serif JP", "Pretendard Variable", serif;
+  --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='30' viewBox='0 0 60 30'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1.6'%3E%3Cpath d='M-30 30a30 30 0 0 1 60 0M-22 30a22 22 0 0 1 44 0M-14 30a14 14 0 0 1 28 0M-6 30a6 6 0 0 1 12 0'/%3E%3Cpath d='M0 30a30 30 0 0 1 60 0M8 30a22 22 0 0 1 44 0M16 30a14 14 0 0 1 28 0M24 30a6 6 0 0 1 12 0'/%3E%3Cpath d='M30 30a30 30 0 0 1 60 0M38 30a22 22 0 0 1 44 0M46 30a14 14 0 0 1 28 0M54 30a6 6 0 0 1 12 0'/%3E%3C/g%3E%3C/svg%3E");
+  --pattern-size: 60px 30px;
+}
+
+/* ----- 🇪🇸 스페인어 : 안달루시아 · 아줄레주 타일 ----- */
+[data-lang="es"] {
+  --brand: #c1440e;
+  --accent: #f2a104;
+  --ink: #fff8ec;
+  --on-brand: #fff8ec;
+  --display: "Playfair Display", "Pretendard Variable", serif;
+  --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1.5'%3E%3Cpath d='M22 1l21 21-21 21L1 22z'/%3E%3Ccircle cx='22' cy='22' r='7'/%3E%3Cpath d='M22 8v7M22 29v7M8 22h7M29 22h7'/%3E%3C/g%3E%3C/svg%3E");
+  --pattern-size: 44px 44px;
+}
+
+/* ----- 🇨🇳 중국어 : 상하이 · 상운문(祥雲紋) ----- */
+[data-lang="zh"] {
+  --brand: #c8102e;
+  --accent: #d4a017;
+  --ink: #fff9f0;
+  --on-brand: #fff9f0;
+  --display: "Noto Serif SC", "Pretendard Variable", serif;
+  --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='40' viewBox='0 0 64 40'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1.6'%3E%3Cpath d='M4 30c0-7 6-11 11-8 1-7 9-9 13-4 4-5 12-3 13 4 6-2 12 2 12 8'/%3E%3Ccircle cx='15' cy='28' r='4.5'/%3E%3Ccircle cx='32' cy='23' r='5.5'/%3E%3Ccircle cx='49' cy='28' r='4.5'/%3E%3Cpath d='M0 38h64'/%3E%3C/g%3E%3C/svg%3E");
+  --pattern-size: 64px 40px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d0e11;
+    --surface: #16181d;
+    --surface-2: #1d2027;
+    --fg: #f2efea;
+    --muted: #9a958e;
+    --border: #2a2d35;
+  }
+  [data-lang="en"] { --brand: #123a6b; --ink: #131720; }
+  [data-lang="ja"] { --brand: #24518f; --ink: #12161f; }
+  [data-lang="es"] { --brand: #d4561a; --ink: #1d160f; }
+  [data-lang="zh"] { --brand: #d81f3c; --ink: #1c1210; }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--border);
+  --color-brand: var(--brand);
+  --color-accent: var(--accent);
+  --color-ink: var(--ink);
+  --color-on-brand: var(--on-brand);
+  --font-display: var(--display);
+  --radius-card: var(--radius);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  /* 국기 이모지(U+1F1E6~1F1FF)는 Windows 기본 폰트에 없어 텍스트로 보인다.
+     Google Fonts가 해당 구간만 서브셋으로 제공하는 Noto Color Emoji를 폴백으로 둔다. */
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", system-ui, "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* 언어 테마 표면: 브랜드 컬러 + 패턴 오버레이 */
+.themed {
+  position: relative;
+  background: var(--brand);
+  color: var(--on-brand);
+  isolation: isolate;
+  overflow: hidden;
+}
+.themed::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--pattern);
+  background-size: var(--pattern-size);
+  opacity: 0.12;
+  z-index: -1;
+}
+.themed::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 90% at 85% 0%, color-mix(in srgb, var(--accent) 55%, transparent), transparent 60%);
+  z-index: -1;
+}
+
+.display { font-family: var(--display), "Noto Color Emoji", "Apple Color Emoji"; letter-spacing: 0.01em; }
+
+/* 재사용 컴포넌트 클래스 */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.25rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: var(--brand); color: var(--on-brand); }
+.btn-primary:hover:not(:disabled) { box-shadow: var(--shadow-md); }
+.btn-accent { background: var(--accent); color: #fff; }
+.btn-ghost { background: transparent; border-color: var(--border); color: var(--fg); }
+.btn-ghost:hover { background: var(--surface-2); }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.chip-solid { background: var(--brand); color: var(--on-brand); border-color: transparent; }
+.chip-accent { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent); border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
+
+.prose-muted { color: var(--muted); line-height: 1.75; }
+
+input[type="text"], input[type="email"], input[type="password"], select, textarea {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--fg);
+  font: inherit;
+}
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid color-mix(in srgb, var(--accent) 60%, transparent);
+  outline-offset: 1px;
+}
