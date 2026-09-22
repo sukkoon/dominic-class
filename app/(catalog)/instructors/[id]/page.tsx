@@ -9,8 +9,14 @@ import StarRating from "@/components/star-rating";
 import LevelBadge from "@/components/level-badge";
 
 export async function generateStaticParams() {
-  const { instructors } = await getCatalog();
-  return instructors.map((i) => ({ id: i.id }));
+  // 환경변수가 없거나 DB에 닿지 못하면 미리 만들지 않고 요청 시 렌더한다.
+  try {
+    const { instructors } = await getCatalog();
+    return instructors.map((i) => ({ id: i.id }));
+  } catch (e) {
+    console.warn("[generateStaticParams] /instructors/[id] 사전 생성 건너뜀:", e);
+    return [];
+  }
 }
 
 export async function generateMetadata({

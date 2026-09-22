@@ -18,8 +18,15 @@ import { createClient } from "@/lib/supabase/server";
 import { ratingAvg } from "@/lib/types";
 
 export async function generateStaticParams() {
-  const { courses } = await getCatalog();
-  return courses.map((c) => ({ slug: c.slug }));
+  // 환경변수가 없거나 DB에 닿지 못하면 미리 만들지 않고 요청 시 렌더한다.
+  // 여기서 던지면 빌드 전체가 실패해 원인을 찾기 어렵다.
+  try {
+    const { courses } = await getCatalog();
+    return courses.map((c) => ({ slug: c.slug }));
+  } catch (e) {
+    console.warn("[generateStaticParams] /courses/[slug] 사전 생성 건너뜀:", e);
+    return [];
+  }
 }
 
 export async function generateMetadata({

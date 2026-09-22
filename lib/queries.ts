@@ -16,12 +16,43 @@ import type {
   ScheduleTrack,
 } from "@/lib/types";
 
-/** 카탈로그는 공개 데이터이므로 쿠키 없는 anon 클라이언트로 읽는다. */
-const sb = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  { auth: { persistSession: false, autoRefreshToken: false } },
-);
+/** 배포 환경에 Supabase 공개 환경변수가 들어와 있는지 */
+export function hasSupabaseEnv(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  );
+}
+
+let cached: ReturnType<typeof createClient> | null = null;
+
+/**
+ * 카탈로그는 공개 데이터이므로 쿠키 없는 anon 클라이언트로 읽는다.
+ *
+ * 모듈 로드 시점에 만들지 않고 처음 쓸 때 만든다.
+ * 최상위에서 만들면 환경변수가 없을 때 `next build` 의 페이지 수집 단계에서
+ * "supabaseUrl is required" 로 빌드 전체가 죽어 원인을 알기 어렵다.
+ */
+function sbClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !key) {
+    throw new Error(
+      "Supabase 환경변수가 없습니다. NEXT_PUBLIC_SUPABASE_URL 과 NEXT_PUBLIC_SUPABASE_ANON_KEY 를 " +
+        "Vercel 프로젝트 Settings → Environment Variables 에 Production·Preview·Development 모두 " +
+        "체크해서 추가한 뒤 Redeploy 하세요.",
+    );
+  }
+
+  cached ??= createClient(url, key, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+  return cached;
+}
+
+const sb = {
+  from: (table: string) => sbClient().from(table),
+};
 
 export type Catalog = {
   languages: Language[];
