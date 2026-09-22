@@ -386,8 +386,8 @@ update public.dc_instructors i
 -- 출처: Unsplash (Unsplash License — 상업적 사용 무료, 출처 표기 불필요)
 -- 스크림을 얹은 상태에서 랜드마크가 확실히 보이는 구도로 골랐다.
 update public.dc_languages set
-  hero_image_url = 'https://images.unsplash.com/photo-1524099163253-32b7f0256868?auto=format&fit=crop&w=1920&q=75',
-  hero_image_alt = '뉴욕 리버티섬의 자유의 여신상'
+  hero_image_url = 'https://images.unsplash.com/photo-1654154203222-d10c016a13b9?auto=format&fit=crop&w=1920&q=75',
+  hero_image_alt = '물 위에 원경으로 서 있는 뉴욕 자유의 여신상'
  where code = 'en';
 
 update public.dc_languages set
