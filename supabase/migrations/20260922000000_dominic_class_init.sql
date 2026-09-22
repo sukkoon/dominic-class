@@ -403,8 +403,11 @@ as $$
 $$;
 
 -- 결제 승인 후 호출. 주문 항목마다 수강 + 진도 12행을 만들고 장바구니를 비운다. 멱등.
+-- 반환 타입이 table (enrollment_id uuid) 이면 OUT 컬럼명이 아래
+-- insert ... on conflict (enrollment_id, lesson_no) 의 컬럼 참조와 충돌해
+-- "column reference enrollment_id is ambiguous" 로 실패한다. setof uuid 로 둔다.
 create or replace function public.dc_fulfill_order(p_order_code text)
-returns table (enrollment_id uuid)
+returns setof uuid
 language plpgsql
 security definer
 set search_path = public, pg_temp
@@ -442,8 +445,7 @@ begin
         on l.course_id = v_item.course_id and l.lesson_no = s.lesson_no
     on conflict (enrollment_id, lesson_no) do nothing;
 
-    enrollment_id := v_enr;
-    return next;
+    return next v_enr;
   end loop;
 
   delete from public.dc_cart_items c
