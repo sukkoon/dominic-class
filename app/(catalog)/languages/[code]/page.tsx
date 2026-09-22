@@ -35,7 +35,7 @@ export default async function LanguagePage({ params }: { params: Promise<{ code:
     <div>
       {/* 언어 테마 히어로 — 현지어 워터마크 + 국가 모티프 */}
       <section className="themed themed-hero">
-        <span className="hero-watermark display" aria-hidden="true">
+        <span className="hero-watermark display-native" aria-hidden="true">
           {lang.name_native}
         </span>
 
@@ -46,12 +46,9 @@ export default async function LanguagePage({ params }: { params: Promise<{ code:
               <span className="text-3xl opacity-80">{lang.flag_emoji_alt}</span>
             ) : null}
           </div>
-          <p className="display mt-5 text-lg opacity-80">{lang.name_native}</p>
-          <h1 className="display mt-1 text-4xl font-bold sm:text-5xl">{lang.name_ko} 클래스</h1>
+          <p className="display-native mt-5 text-lg opacity-80">{lang.name_native}</p>
+          <h1 className="display mt-1 text-4xl sm:text-5xl">{lang.name_ko} 클래스</h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed opacity-90">{lang.tagline_ko}</p>
-          <p className="mt-3 text-sm opacity-75">
-            {lang.country_name_ko} · {lang.theme_mood_ko}
-          </p>
 
           <div className="mt-8 flex flex-wrap gap-2">
             {levels.map((lv) => (

@@ -157,9 +157,10 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--fg);
-  /* 국기 이모지(U+1F1E6~1F1FF)는 Windows 기본 폰트에 없어 텍스트로 보인다.
+  /* 본문 서체는 나눔고딕.
+     국기 이모지(U+1F1E6~1F1FF)는 Windows 기본 폰트에 없어 텍스트로 보이므로,
      Google Fonts가 해당 구간만 서브셋으로 제공하는 Noto Color Emoji를 폴백으로 둔다. */
-  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+  font-family: "Nanum Gothic", -apple-system, BlinkMacSystemFont, "Malgun Gothic",
     "Segoe UI", system-ui, "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji",
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -227,8 +228,17 @@ a { color: inherit; text-decoration: none; }
   z-index: 0;
 }
 
+/* 제목도 본문과 같은 나눔고딕. 굵게 + 자간을 좁혀 대비를 만든다. */
 .display {
-  font-family: var(--display), "Noto Color Emoji", "Apple Color Emoji";
+  font-family: "Nanum Gothic", "Malgun Gothic", system-ui, "Noto Color Emoji",
+    "Apple Color Emoji", sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+/* 현지어 표기(English / 日本語 / Español / 中文)만 언어별 서체를 유지한다. */
+.display-native {
+  font-family: var(--display), "Nanum Gothic", serif;
   letter-spacing: 0.01em;
 }
 
@@ -458,4 +468,135 @@ input:focus, select:focus, textarea:focus {
   .tone-signature {
     --brand-base: #d4564a;
   }
+}
+
+/* ============================================================
+   클래스 유형 색 — 문법 / 회화 / 시험
+   언어 계열색(블루·로즈·앰버·레드) 어느 것과도 겹치지 않는 세 색을 골라,
+   같은 레벨 카드 세 장이 나란히 놓여도 서로 구분되게 한다.
+   ============================================================ */
+[data-type="grammar"]      { --type: #0f766e; }  /* 청록 */
+[data-type="conversation"] { --type: #6d28d9; }  /* 바이올렛 */
+[data-type="exam"]         { --type: #334155; }  /* 슬레이트 */
+
+/* 유형색을 쓰는 카드 머리. 레벨을 이미 아는 자리(언어 페이지의 레벨 섹션)에서 쓴다. */
+.type-head {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    var(--type) 0%,
+    color-mix(in srgb, var(--type) 82%, #000) 100%
+  );
+  color: #ffffff;
+  overflow: hidden;
+}
+.type-head::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 3px;
+  background: color-mix(in srgb, #ffffff 45%, var(--type));
+}
+
+.chip-type {
+  background: color-mix(in srgb, var(--type) 10%, transparent);
+  color: var(--type);
+  border-color: color-mix(in srgb, var(--type) 28%, transparent);
+}
+
+/* ============================================================
+   주간 일정 그리드 — 어느 요일에 몇 교시가 있는지를 한눈에
+   ============================================================ */
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+.week-cell {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-2);
+  padding: 7px 3px 8px;
+  text-align: center;
+}
+.week-cell[data-on] {
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.week-day {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--muted);
+}
+.week-cell[data-on] .week-day {
+  color: color-mix(in srgb, var(--accent) 80%, #000);
+}
+.week-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 7px;
+}
+.week-slot {
+  height: 9px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--border) 60%, transparent);
+}
+.week-slot[data-filled] {
+  background: var(--accent);
+}
+
+/* ============================================================
+   번호가 붙은 진행 순서 목록
+   ============================================================ */
+.step-list {
+  counter-reset: step;
+  display: grid;
+  gap: 8px;
+}
+.step-list li {
+  counter-increment: step;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+.step-list li::before {
+  content: counter(step);
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--type, var(--brand-base));
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+/* 강조 수치 박스 */
+.stat-box {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  padding: 12px 10px;
+  text-align: center;
+}
+.stat-box dt {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.stat-box dd {
+  margin: 4px 0 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }

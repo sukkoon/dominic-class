@@ -87,7 +87,11 @@ export default async function InstructorsPage() {
 
                 <div className="grid gap-4 md:grid-cols-3">
                   {row.map(({ classType, instructor, course }) => (
-                    <article key={instructor!.id} className="card flex flex-col p-5">
+                    <article
+                      key={instructor!.id}
+                      data-type={classType.code}
+                      className="card flex flex-col p-5"
+                    >
                       <div className="flex items-start gap-3.5">
                         <InstructorAvatar
                           url={instructor!.avatar_url}
@@ -96,14 +100,14 @@ export default async function InstructorsPage() {
                           size={52}
                         />
                         <div className="min-w-0">
-                          <span className="chip chip-accent">
+                          <span className="chip chip-type">
                             {classType.icon_emoji} {classType.name_ko}
                           </span>
                           <p className="display mt-1.5 truncate text-lg font-bold">
                             {instructor!.name_ko}
                           </p>
                           {instructor!.name_native ? (
-                            <p className="display truncate text-xs text-[var(--muted)]">
+                            <p className="display-native truncate text-xs text-[var(--muted)]">
                               {instructor!.name_native}
                             </p>
                           ) : null}

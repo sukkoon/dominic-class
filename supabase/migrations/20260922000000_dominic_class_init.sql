@@ -61,8 +61,12 @@ create table public.dc_class_types (
   tagline_ko  text not null,
   summary_ko  text not null default '',
   icon_emoji  text not null default '📖',
+  steps       text[] not null default '{}',
+  for_whom_ko text not null default '',
   sort_order  smallint not null default 0
 );
+comment on column public.dc_class_types.steps is '한 차시가 진행되는 순서';
+comment on column public.dc_class_types.for_whom_ko is '이 클래스를 추천하는 대상';
 comment on table public.dc_class_types is 'Dominic Class 강의 유형 (시험은 OPIc 기준)';
 
 -- 강사 36명 (언어 x 레벨 x 유형 1명). 한 사람이 문법·회화·시험을 겸하지 않는다.

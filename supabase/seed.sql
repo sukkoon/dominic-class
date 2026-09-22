@@ -31,10 +31,17 @@ insert into public.dc_levels (code,name_ko,price_krw,instructor_rule_ko,summary_
  ('advanced','고급',150000,'현지 원어민 강사 전담','수업 전체가 현지어. 원어민 강사와 실전 감각을 완성합니다.','👑',3)
 on conflict (code) do nothing;
 
-insert into public.dc_class_types (code,name_ko,tagline_ko,summary_ko,icon_emoji,sort_order) values
- ('grammar','문법','기초부터 탄탄하게','규칙을 이해하고 문장을 스스로 만들어 내는 힘을 기릅니다.','📐',1),
- ('conversation','회화','입이 트이는 실전 대화','현지 상황극과 1:1 스피킹으로 말하기 근육을 만듭니다.','💬',2),
- ('exam','시험','OPIc 대비','모든 시험 클래스는 OPIc 기준으로 설계된 실전 대비 과정입니다.','🎯',3)
+insert into public.dc_class_types
+ (code,name_ko,tagline_ko,summary_ko,icon_emoji,steps,for_whom_ko,sort_order) values
+ ('grammar','문법','기초부터 탄탄하게','규칙을 이해하고 문장을 스스로 만들어 내는 힘을 기릅니다.','📐',
+  array['개념 설명 10분','예문 20개 분석','즉석 작문 실습','오류 교정 피드백'],
+  '규칙을 알고 나면 응용이 빠른 분, 말할 때 어순이 자꾸 헷갈리는 분',1),
+ ('conversation','회화','입이 트이는 실전 대화','현지 상황극과 1:1 스피킹으로 말하기 근육을 만듭니다.','💬',
+  array['현지 상황극으로 시작','핵심 표현 익히기','짝 활동으로 반복','1:1 스피킹 교정'],
+  '읽고 듣는 건 되는데 입이 안 떨어지는 분, 실전에서 바로 써야 하는 분',2),
+ ('exam','시험','OPIc 대비','모든 시험 클래스는 OPIc 기준으로 설계된 실전 대비 과정입니다.','🎯',
+  array['출제 유형 분석','나만의 모범 답변 설계','타이머 실전 응답','등급 기준 교정'],
+  '취업·승진으로 등급이 급한 분, 시험 구조부터 정리하고 싶은 분',3)
 on conflict (code) do nothing;
 
 insert into public.dc_instructors

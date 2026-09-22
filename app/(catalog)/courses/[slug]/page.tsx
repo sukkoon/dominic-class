@@ -9,6 +9,7 @@ import InstructorAvatar from "@/components/instructor-avatar";
 import CurriculumList from "@/components/curriculum-list";
 import CourseCard from "@/components/course-card";
 import LevelBadge from "@/components/level-badge";
+import WeekSchedule from "@/components/week-schedule";
 
 export async function generateStaticParams() {
   const { courses } = await getCatalog();
@@ -50,10 +51,14 @@ export default async function CourseDetailPage({
   const totalHomework = lessons.reduce((s, l) => s + l.homework.length, 0);
 
   return (
-    <div data-lang={course.language_code} data-level={course.level_code}>
+    <div
+      data-lang={course.language_code}
+      data-level={course.level_code}
+      data-type={course.class_type_code}
+    >
       {/* 히어로 — 국가 모티프 + 현지어 워터마크 */}
       <section className="themed themed-hero">
-        <span className="hero-watermark display" aria-hidden="true">
+        <span className="hero-watermark display-native" aria-hidden="true">
           {course.language.name_native}
         </span>
 
@@ -154,7 +159,7 @@ export default async function CourseDetailPage({
                 </p>
                 <p className="display truncate text-xl font-bold">{course.instructor.name_ko}</p>
                 {course.instructor.name_native ? (
-                  <p className="display truncate text-sm opacity-75">
+                  <p className="display-native truncate text-sm opacity-75">
                     {course.instructor.name_native}
                   </p>
                 ) : null}
@@ -242,13 +247,24 @@ export default async function CourseDetailPage({
                         required
                         className="peer sr-only"
                       />
-                      <div className="rounded-xl border border-[var(--border)] p-4 transition peer-checked:border-[var(--accent)] peer-checked:bg-[color-mix(in_srgb,var(--accent)_10%,transparent)]">
-                        <p className="text-sm font-bold">{t.label_ko}</p>
-                        <p className="mt-1 text-xs text-[var(--muted)]">
-                          {t.days_label_ko} · {t.time_label_ko}
-                        </p>
-                        <p className="mt-1 text-xs text-[var(--muted)]">
-                          월 {t.days_per_month}일 등원 · {t.lessons_per_month}차시
+                      <div className="rounded-xl border border-[var(--border)] p-4 transition peer-checked:border-[var(--accent)] peer-checked:bg-[color-mix(in_srgb,var(--accent)_8%,transparent)]">
+                        <div className="flex items-start justify-between gap-2">
+                          <p className="text-sm font-bold">{t.label_ko}</p>
+                          <span className="chip shrink-0 !px-2 !py-0.5 !text-[11px]">
+                            {t.time_label_ko.split(" (")[0]}
+                          </span>
+                        </div>
+
+                        <div className="mt-3">
+                          <WeekSchedule
+                            daysOfWeek={t.days_of_week}
+                            periodsPerDay={t.periods_per_day}
+                          />
+                        </div>
+
+                        <p className="mt-3 text-xs text-[var(--muted)]">
+                          월 {t.days_per_month}일 등원 · 하루 {t.hours_per_day}시간 ·{" "}
+                          {t.lessons_per_month}차시
                         </p>
                       </div>
                     </label>

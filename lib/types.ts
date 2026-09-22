@@ -43,6 +43,10 @@ export type ClassType = {
   tagline_ko: string;
   summary_ko: string;
   icon_emoji: string;
+  /** 한 차시가 진행되는 순서 */
+  steps: string[];
+  /** 이 클래스를 추천하는 대상 */
+  for_whom_ko: string;
   sort_order: number;
 };
 
@@ -76,6 +80,8 @@ export type ScheduleTrack = {
   label_ko: string;
   days_label_ko: string;
   time_label_ko: string;
+  /** ISO 요일 번호 (월=1 … 일=7) */
+  days_of_week: number[];
   start_time: string;
   end_time: string;
   hours_per_day: number;

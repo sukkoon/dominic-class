@@ -19,12 +19,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&family=Noto+Serif+JP:wght@400;700&family=Noto+Serif+SC:wght@400;700&family=Oswald:wght@500;700&family=Playfair+Display:ital,wght@0,700;1,600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Noto+Color+Emoji&family=Noto+Serif+JP:wght@400;700&family=Noto+Serif+SC:wght@400;700&family=Oswald:wght@500;700&family=Playfair+Display:ital,wght@0,700;1,600&display=swap"
           rel="stylesheet"
-        />
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
         />
       </head>
       <body className="flex min-h-screen flex-col">
